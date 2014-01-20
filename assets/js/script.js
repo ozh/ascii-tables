@@ -161,6 +161,9 @@ function createTable() {
         // output the top most row
         // Ex: +---+---+
         if (i == 0 && style != 'gfm' ) {
+            if( style == 2 && !hasHeaders ) {
+                cH = sM;
+            }
             output += cTL;
             for (var j = 0; j < colLengths.length; j++) {
                 output += _repeat(cH, colLengths[j] + 2);
@@ -174,7 +177,7 @@ function createTable() {
 
         // output the header separator row
         // Ex: +---+---+
-        if (hasHeaders && i == 1) {
+        if (hasHeaders && i == 1 ) {
             output += cML;
             for (var j = 0; j < colLengths.length; j++) {
                 output += _repeat(cH, colLengths[j] + 2);
@@ -189,7 +192,7 @@ function createTable() {
         }
         
         // output line separators
-        if( style == "2" & i > 1 ) {
+        if( ( !hasHeaders && style == "2" & i >= 1 ) || ( hasHeaders && style == 2 & i > 1 ) ) {
             output += sL;
             for (var j = 0; j < colLengths.length; j++) {
                 output += _repeat(sM, colLengths[j] + 2);
