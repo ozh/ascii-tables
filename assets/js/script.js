@@ -25,6 +25,7 @@ function createTable() {
     var cML, cMM, cMR;
     var cBL, cBM, cBR;
     var cH, cV;
+    var sL, sM, sR;
 
     var headerStyle = $('#hdr-style').val();
     var autoFormat = $('#auto-format').is(':checked');
@@ -89,7 +90,7 @@ function createTable() {
     var style = $('#style').val();
     switch (style) {
     case "0":
-        // ascii
+        // ascii mysql style
         cTL = "+";
         cTM = "+";
         cTR = "+";
@@ -101,6 +102,23 @@ function createTable() {
         cBR = "+";
         cH = "-";
         cV = "|";
+        break;
+    case "2":
+        // ascii 2
+        cTL = "+";
+        cTM = "+";
+        cTR = "+";
+        cML = "+";
+        cMM = "+";
+        cMR = "+";
+        cBL = "+";
+        cBM = "+";
+        cBR = "+";
+        cH = "=";
+        cV = "|";
+        sL = "+";
+        sM = "-";
+        sR = "+";
         break;
     case "gfm":
         // github markdown
@@ -169,6 +187,22 @@ function createTable() {
             }
             output += "\n";
         }
+        
+        // output line separators
+        if( style == "2" & i > 1 ) {
+            output += sL;
+            for (var j = 0; j < colLengths.length; j++) {
+                output += _repeat(sM, colLengths[j] + 2);
+                if (j < colLengths.length - 1) {
+                    output += sR;
+                }
+                else {
+                    output += sR;
+                }
+            }
+            output += "\n";
+            
+        }
 
         // output the data
         output += cV;
@@ -192,6 +226,9 @@ function createTable() {
         // Ex: +---+---+
         if (i == rows.length - 1 && style != 'gfm' ) {
             output += cBL;
+            if( style == 2 ) {
+                cH = sM;
+            }
             for (var j = 0; j < colLengths.length; j++) {
                 output += _repeat(cH, colLengths[j] + 2);
                 if (j < colLengths.length - 1) output += cBM;
