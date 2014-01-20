@@ -1,7 +1,7 @@
 ascii-tables
 ============
 
-Quickly format table in ASCII. Great for code comments, or Github Markdown!
+Quickly format tables in ASCII. Great for code comments, or Github Markdown!
 
 Play with it: http://ozh.github.io/ascii-tables/
 
@@ -16,7 +16,7 @@ This is a row with only one cell
 
 Press **Create Table** to get something like:
 
-### Ascii table
+### Ascii table (mysql style)
 ```
 +----------------------------------+---------+------------------------+
 |               Col1               |  Col2   |          Col3          |
