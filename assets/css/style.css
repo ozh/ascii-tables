@@ -59,6 +59,10 @@ html, body {
         margin:6px 10px 0 30px;
         width:100px;
     }
+    
+    #controls div div {
+        margin-left:140px;
+    }
 
     #controls select {
         width: 200px;
@@ -66,6 +70,7 @@ html, body {
 
     #controls input {
         width: auto;
+        display:block;
     }
     
 button {
