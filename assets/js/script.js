@@ -120,6 +120,14 @@ function createTable() {
         sM = "-";
         sR = "+";
         break;
+	case "3":
+        // ascii - compact
+        cML = " ";
+        cMM = " ";
+        cMR = " ";
+        cH  = "-";
+        cV  = " ";
+        break;
     case "gfm":
         // github markdown
         cTL = "|";
@@ -160,7 +168,7 @@ function createTable() {
     for (var i = 0; i < rows.length; i++) {
         // output the top most row
         // Ex: +---+---+
-        if (i == 0 && style != 'gfm' ) {
+        if (i == 0 && style != 'gfm' && style != 3 ) {
             if( style == 2 && !hasHeaders ) {
                 cH = sM;
             }
@@ -227,7 +235,7 @@ function createTable() {
 
         // output the bottom row
         // Ex: +---+---+
-        if (i == rows.length - 1 && style != 'gfm' ) {
+        if (i == rows.length - 1 && style != 'gfm' && style != 3 ) {
             output += cBL;
             if( style == 2 ) {
                 cH = sM;
