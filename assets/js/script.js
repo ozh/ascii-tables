@@ -309,25 +309,45 @@ function parseTable(table) {
     }
     
     // finally, loop over all items and extract the data
-    var result = "";
+    var allRows = [];
+    allRows.push([])
     for (var i = 0; i < lines.length; i++) {
         var line = lines[i];
         if (isSepratorLine(line)) {
+            allRows.push([])
             continue;
         }
-        
+        var currentRow = allRows[allRows.length - 1];
         for (var j = 0; j < colIndexes.length - 1; j++) {
             var fromCol = colIndexes[j] + 1;
             var toCol = colIndexes[j+1];
             var data = line.slice(fromCol, toCol);
             data = _trim(data);
-            result += data;
+            var existingCellContent;
+            if (currentRow[j]) {
+                existingCellContent = currentRow[j];
+            } else {
+                existingCellContent = "";
+            }
+            currentRow[j] = existingCellContent + data;
+        }                
+    }
+    
+    var result = "";
+    for (var i = 0; i < allRows.length; i++) {
+        var row = allRows[i];
+        if (row.length == 0) {
+            continue;
+        }
+        
+        for (var j = 0; j < row.length; j++) {
+            result += row[j];
             
-            if (j < colIndexes.length - 2)
+            if (j < row.length - 1)
                 result += '\t';
         }
-                
-        if (i < lines.length - 1)
+        
+        if (i < allRows.length - 1)
             result += '\n';
     }
 
