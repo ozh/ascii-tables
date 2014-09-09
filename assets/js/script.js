@@ -326,7 +326,14 @@ function parseTable(table, newRowOnBr) {
             var fromCol = colIndexes[j] + 1;
             var toCol = colIndexes[j+1];
             var data = line.slice(fromCol, toCol);
+            var additionalSpace = false;
+            if (data.endsWith("  ")) { //one space is formating
+                additionalSpace = true;
+            }
             data = _trim(data);
+            if (additionalSpace) {
+                data += " ";
+            }
             var existingCellContent;
             if (currentRow[j]) {
                 existingCellContent = currentRow[j];
@@ -345,7 +352,7 @@ function parseTable(table, newRowOnBr) {
         }
         
         for (var j = 0; j < row.length; j++) {
-            result += row[j];
+            result += _trim(row[j]);
             
             if (j < row.length - 1)
                 result += '\t';
