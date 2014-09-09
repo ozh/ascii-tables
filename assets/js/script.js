@@ -276,11 +276,12 @@ function outputAsNormalTable(rows, hasHeaders, colLengths) {
 }
 
 function parseTableClick() {
-    var result = parseTable($('#output').val());
+    var newRowOnBr = $('#new-row-on-br').is(':checked');
+    var result = parseTable($('#output').val(), newRowOnBr);
     $('#input').val(result);
 }
 
-function parseTable(table) {
+function parseTable(table, newRowOnBr) {
     var lines = table.split('\n');
     
     // first find a seprator line
@@ -316,6 +317,9 @@ function parseTable(table) {
         if (isSepratorLine(line)) {
             allRows.push([])
             continue;
+        }
+        if (newRowOnBr) {
+            allRows.push([])
         }
         var currentRow = allRows[allRows.length - 1];
         for (var j = 0; j < colIndexes.length - 1; j++) {
