@@ -94,11 +94,6 @@ footer {
     color: #fff;
 }
 
-    footer:hover {
-        color: inherit;
-    }
-
-
 header, footer {
     background-color: #3CC255 !important;
 }
