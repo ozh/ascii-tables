@@ -142,6 +142,20 @@ function createTable() {
         cH = "-";
         cV = "|";
         break;
+    case "restructured":
+        // restructured table
+        cTL = " ";
+        cTM = " ";
+        cTR = " ";
+        cML = " ";
+        cMM = " ";
+        cMR = " ";
+        cBL = " ";
+        cBM = " ";
+        cBR = " ";
+        cH = "=";
+        cV = " ";
+        break;
     case "1":
         // unicode
         cTL = "\u2554";

@@ -60,6 +60,16 @@ Press **Create Table** to get something like:
 | This is a row with only one cell |         |                        |
 ```
 
+### reStructuredText table
+```
+ ================================== ========= ======================== 
+                Col1                  Col2              Col3           
+ ================================== ========= ======================== 
+  Value 1                            Value 2   123                     
+  Separate                           cols      with a tab or 4 spaces  
+  This is a row with only one cell                                     
+ ================================== ========= ======================== 
+```
 ### Or even a boring html &lt;table>
 
 
