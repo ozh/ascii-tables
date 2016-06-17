@@ -31,7 +31,8 @@
         
         
 <h2>Input</h2>
-
+<p id="saveMsg"></p>
+<button class="btn btn-sm btn-primary" style="margin-left: 0px !important; margin-bottom: 10px;" id="loadDefault">Reset</button>
 <div>
 
     <textarea class="form-control fixed-width " rows="5" id="input">Col1	Col2	Col3
@@ -137,6 +138,7 @@ This is a row with only one cell</textarea>
             {
                 if (cookie !== 'Placeholder')
                 {
+                    $('#saveMsg').text('Save has been loaded!');
                     $('#input').text(cookie.replace(/( retVal121 )/g, '\r\n'));
                 } 
                 else 
@@ -148,6 +150,11 @@ This is a row with only one cell</textarea>
             $('#input').on('input', function(){
                 setCookie('asciiTable', $('#input').val().replace(/(?:\r\n|\r|\n)/g, " " + returnChar + " "), 99999);
             });
+
+            $('#loadDefault').click(function(){
+                setCookie('asciiTable', 'Placeholder', 99999);
+                location.reload();
+            })
         })
     </script>
 </html>
