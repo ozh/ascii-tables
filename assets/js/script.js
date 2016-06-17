@@ -1,4 +1,3 @@
-
 $(function() {
     // allow tab key to be used in the text area
     $('#input').keydown(function(e) {
@@ -67,8 +66,9 @@ function createTable() {
                     isNumberCol[j] = false;
                 }
             }
-            if (isNewCol || colLengths[j] < data.length) {
-               colLengths[j] = data.length;
+            //Chinese character displays double length than ASCII character
+            if (isNewCol || colLengths[j] < data.replace(/[^\x00-\xff]/g, '__').length) {
+               colLengths[j] = data.replace(/[^\x00-\xff]/g, '__').length;
             }
         }
     }
@@ -120,7 +120,7 @@ function createTable() {
         sM = "-";
         sR = "+";
         break;
-	case "3":
+    case "3":
         // ascii - compact
         cML = " ";
         cMM = " ";
@@ -141,20 +141,6 @@ function createTable() {
         cBR = "|";
         cH = "-";
         cV = "|";
-        break;
-    case "restructured":
-        // restructured table
-        cTL = " ";
-        cTM = " ";
-        cTR = " ";
-        cML = " ";
-        cMM = " ";
-        cMR = " ";
-        cBL = " ";
-        cBM = " ";
-        cBR = " ";
-        cH = "=";
-        cV = " ";
         break;
     case "1":
         // unicode
@@ -242,7 +228,8 @@ function createTable() {
                     align = "r";
                 }
             }
-            data = _pad(data, colLengths[j], " ", align);
+            //Chinese character displays double length than ASCII character
+            data = _pad(data, colLengths[j]-(data.replace(/[\u4e00-\u9fff]+/, '__').length-data.length), " ", align);
             output += " " + data + " " + cV;
         }
         output += "\n";

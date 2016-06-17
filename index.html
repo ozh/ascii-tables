@@ -42,7 +42,7 @@ This is a row with only one cell</textarea>
 
     <div id="controls">
         <div class="row">
-            <label for="hdr-style" class="control-label">Header</label>
+            <label for="hdr-style" class="control-label">Header position</label>
             <div>
                 <select class="form-control" id="hdr-style">
                     <option value="none">None</option>
@@ -53,14 +53,14 @@ This is a row with only one cell</textarea>
         </div>
       
         <div class="row">
-            <label for="auto-format"  class="control-label">Center</label>
+            <label for="auto-format"  class="control-label">Centered header</label>
             <div class="">
                 <input class="form-control" id="auto-format" checked="true" type="checkbox">
             </div>
         </div>
       
         <div class="row">
-            <label for="style" class="control-label">Style</label>
+            <label for="style" class="control-label">Table Style</label>
             <div>
                 <select id="style"  class="form-control">
                     <option value="0">Ascii (mysql style)</option>
@@ -69,7 +69,7 @@ This is a row with only one cell</textarea>
                     <option value="1">Unicode</option>
                     <option value="gfm">Github Markdown</option>
                     <option value="restructured">reStructuredText</option>
-                    <option value="html">HTML</option>
+                    <option value="html">HTML Code</option>
                 </select>
             </div>
         </div>
@@ -78,7 +78,7 @@ This is a row with only one cell</textarea>
 
     </div>
     
-        <button id="OutputTable" class="btn bt-lg btn-primary" onclick="createTable()">Create Table</button>
+        <button class="btn bt-lg btn-primary" onclick="createTable()">Create Table</button>
 </div>
 
 <h2>Output:</h2>
@@ -151,9 +151,9 @@ This is a row with only one cell</textarea>
                 setCookie('asciiTable', $('#input').val().replace(/(?:\r\n|\r|\n)/g, " " + returnChar + " "), 99999);
             });
 
-            $('#loadDefault').click(function(){
+            $('#loadDefault').click(function(){ //Resets the cookie to placeholder to trigger default val load
                 setCookie('asciiTable', 'Placeholder', 99999);
-                location.reload();
+                location.reload(); //brings default into action
             })
         })
     </script>
