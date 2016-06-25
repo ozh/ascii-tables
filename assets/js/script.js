@@ -32,6 +32,12 @@ function createTable() {
     var hasHeaders = headerStyle == "top";
     var spreadSheetStyle = headerStyle == "ssheet";
     var input = $('#input').val();
+	var separator = $('#separator').val();
+	
+	if (separator == "") {
+		//Default separator is the tab
+		separator = "\t";
+	} 
 
     var rows = input.split(/[\r\n]+/);
     if (rows[rows.length - 1] == "") {
@@ -51,8 +57,13 @@ function createTable() {
     var colLengths = [];
     var isNumberCol = [];
     for (var i = 0; i < rows.length; i++) {
-        rows[i] = rows[i].replace(/(    )/g, "\t");
-        var cols = rows[i].split(/\t/);
+		if (separator == "\t") {
+			rows[i] = rows[i].replace(/(    )/g, "\t");
+		} else {
+			//Tab is not the separator, replace tabs with single characters to keep correct spacing
+			rows[i] = rows[i].replace(/\t/g, "    ");
+		}
+        var cols = rows[i].split(separator);
         for (var j = 0; j < cols.length; j++) {
             var data = cols[j];
             var isNewCol = colLengths[j] == undefined;
@@ -63,7 +74,7 @@ function createTable() {
             if (autoFormat) {
                 if (hasHeaders && i == 0 && !spreadSheetStyle) {
                     ; // a header is allowed to not be a number (exclude spreadsheet because the header hasn't been added yet
-                } else if (isNumberCol[j] && !data.match(/^(\s*-?\d+(,\d{3})*[.]*\d*\s*|\s*)$/)) {
+                } else if (isNumberCol[j] && !data.match(/^(\s*-?\d+(,\d{3})*[.]*\d*\s*|\s*)$/)) { //number can be negative, comma-separated, or decimal
                     isNumberCol[j] = false;
                 }
             }
@@ -231,7 +242,7 @@ function createTable() {
 
         // output the data
         output += cV;
-        var cols = rows[i].split(/\t/);
+        var cols = rows[i].split(separator);
         for (var j = 0; j < colLengths.length; j++) {
             var data = cols[j] || "";
             var align = "l";
@@ -272,7 +283,7 @@ function outputAsNormalTable(rows, hasHeaders, colLengths) {
 
     var $outputTable = $('<table border="1" cellpadding="1" cellspacing="1">');
     for (var i = 0; i < rows.length; i++) {
-        var cols = rows[i].split(/\t/);
+        var cols = rows[i].split(separator);
         var tag = (hasHeaders && i == 0) ? "th" : "td";
         var $row = $('<tr>').appendTo($outputTable);
         for (var j = 0; j < colLengths.length; j++) {
