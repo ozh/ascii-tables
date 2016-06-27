@@ -41,9 +41,9 @@ This is a row with only one cell</textarea>
 
     <div id="controls">
         <div class="row">
-            <label for="hdr-style" class="control-label">Header</label>
+            <label for="hdr-style" class="control-label" title="Select what should be used as a header">Header</label>
             <div>
-                <select class="form-control" id="hdr-style">
+                <select class="form-control" id="hdr-style" title="Select what should be used as a header">
                     <option value="none">None</option>
                     <option value="top" selected="true">First Row</option>
                     <option value="ssheet">Spreadsheet</option>
@@ -52,16 +52,16 @@ This is a row with only one cell</textarea>
         </div>
       
         <div class="row">
-            <label for="auto-format"  class="control-label">Center</label>
+            <label for="auto-format"  class="control-label" title="Center the headers in the output table">Center</label>
             <div class="">
-                <input class="form-control" id="auto-format" checked="true" type="checkbox">
+                <input class="form-control" id="auto-format" checked="true" type="checkbox" title="Center the headers in the output table">
             </div>
         </div>
       
         <div class="row">
-            <label for="style" class="control-label">Style</label>
+            <label for="style" class="control-label" title="Select the output format of the table">Style</label>
             <div>
-                <select id="style"  class="form-control">
+                <select id="style"  class="form-control" title="Select the output format of the table">
                     <option value="0">Ascii (mysql style)</option>
                     <option value="2">Ascii (alt style)</option>
                     <option value="3">Ascii (compact)</option>
@@ -75,9 +75,9 @@ This is a row with only one cell</textarea>
 
 		
         <div class="row">
-            <label for="separator" class="control-label" title="Leave blank for tab separator, add character for custom separator">Separator</label>
+            <label for="separator" class="control-label" title="Identify character for custom separator, default is the tab character">Separator</label>
             <div>
-				<input class="form-control" id="separator" type="text" name="separator" maxlength="1" size="1" title="Leave blank for tab separator, add character for custom separator" onfocus="this.value = ''" />
+		<input class="form-control" id="separator" type="text" name="separator" maxlength="1" size="1" title="Identify character for custom separator, default is the tab character"  onfocus="this.value = ''" placeholder="<tab>" />
             </div>
         </div>
 
