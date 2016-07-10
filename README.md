@@ -8,9 +8,9 @@ Play with it: http://ozh.github.io/ascii-tables/
 ### Input text like this
 
 ```
-Col1	Col2	Col3
-Value 1	Value 2	123
-Separate	columns	with a tab or 4 spaces
+Col1	Col2	Col3	Numeric Column
+Value 1	Value 2	123	10.0
+Separate	cols    with a tab or 4 spaces	-2,027.1
 This is a row with only one cell
 ```
 
