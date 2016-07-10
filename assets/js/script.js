@@ -49,7 +49,7 @@ function createTable() {
         hasHeaders = true;
         // add the row numbers
         for (var i = 0; i < rows.length; i++) {
-            rows[i] = (i+1) + "\t" + rows[i];
+            rows[i] = (i+1) + separator + rows[i];
         }
     }    
 
@@ -93,7 +93,7 @@ function createTable() {
             if (90 < asciiVal) {
                 asciiVal = 90; // Z is the max column
             }
-            letterRow += "\t" + String.fromCharCode(asciiVal);
+            letterRow += separator + String.fromCharCode(asciiVal);
         }
         rows.splice(0, 0, letterRow); // add as first row
     }
@@ -182,7 +182,7 @@ function createTable() {
         cV = "\u2551";
         break;
     case "html":
-        outputAsNormalTable(rows, hasHeaders, colLengths);
+        outputAsNormalTable(rows, hasHeaders, colLengths, separator);
         return;
     default:
         break;
@@ -278,7 +278,7 @@ function createTable() {
     $('#outputTbl').hide();
 }
 
-function outputAsNormalTable(rows, hasHeaders, colLengths) {
+function outputAsNormalTable(rows, hasHeaders, colLengths, separator) {
     var output = "";
 
     var $outputTable = $('<table border="1" cellpadding="1" cellspacing="1">');
