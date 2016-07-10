@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>Ascii Table Generator &ndash; Quickly format ascii table. Great for source code comments and markdown!</title>
+    <title>ASCII Table Generator &ndash; Quickly format ASCII table. Great for source code comments and markdown!</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="assets/css/bootstrap.min.css" rel="stylesheet">
     <link href="assets/css/style.css" rel="stylesheet">
@@ -16,14 +16,14 @@
         <header class="jumbotron">
             <div class="container">
                 <div class="row">
-                <h1><a href=""><span id="icon" class="fa fa-table"></span> <span id="title">Ascii Table Generator</span>
+                <h1><a href=""><span id="icon" class="fa fa-table"></span> <span id="title">ASCII Table Generator</span>
                 <pre>     _             _ _   _____     _     _      
     / \   ___  ___(_|_) |_   _|_ _| |__ | | ___ 
    / _ \ / __|/ __| | |   | |/ _` | '_ \| |/ _ \
   / ___ \\__ \ (__| | |   | | (_| | |_) | |  __/
  /_/   \_\___/\___|_|_|   |_|\__,_|_.__/|_|\___| </pre></a></h1>
  </div>
-                <p>Quickly format ascii table. Great for <span>source code comments</span> and <span>Github Markdown</span>!</p>
+                <p>Quickly format ASCII table. Great for <span>source code comments</span> and <span>Github Markdown</span>!</p>
             </div>
         </header>
         <div class="container">
@@ -34,9 +34,9 @@
 
 <div>
 
-    <textarea class="form-control fixed-width " rows="5" id="input" onchange="createTable()" onkeyup="createTable()">Col1	Col2	Col3
-Value 1	Value 2	123
-Separate	cols    with a tab or 4 spaces
+    <textarea class="form-control fixed-width " rows="5" id="input" onchange="createTable()" onkeyup="createTable()">Col1	Col2	Col3	Numeric Column
+Value 1	Value 2	123	10.0
+Separate	cols    with a tab or 4 spaces	-2,027.1
 This is a row with only one cell</textarea>
 
     <div id="controls">
@@ -62,12 +62,17 @@ This is a row with only one cell</textarea>
             <label for="style" class="control-label" title="Select the output format of the table">Style</label>
             <div>
                 <select id="style"  class="form-control" title="Select the output format of the table" onchange="createTable()">
-                    <option value="0">Ascii (mysql style)</option>
-                    <option value="2">Ascii (alt style)</option>
-                    <option value="3">Ascii (compact)</option>
-                    <option value="1">Unicode</option>
+                    <option value="mysql">ASCII (mysql style)</option>
+                    <option value="separated">ASCII (separated)</option>
+                    <option value="compact">ASCII (compact)</option>
                     <option value="gfm">Github Markdown</option>
+                    <option value="rounded">ASCII (rounded)</option>
+                    <option value="bubbles">ASCII (bubbles)</option>
+                    <option value="girder">ASCII (girder)</option>
+                    <option value="dots">ASCII (dots)</option>
+                    <option value="unicode">Unicode</option>
                     <option value="restructured">reStructuredText</option>
+                    <option value="wikim">Wikimedia</option>
                     <option value="html">HTML</option>
                 </select>
             </div>
