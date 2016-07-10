@@ -74,7 +74,7 @@ function createTable() {
             if (autoFormat) {
                 if (hasHeaders && i == 0 && !spreadSheetStyle) {
                     ; // a header is allowed to not be a number (exclude spreadsheet because the header hasn't been added yet
-                } else if (isNumberCol[j] && !data.match(/^(\s*-?\d+(,\d{3})*[.]*\d*\s*|\s*)$/)) { //number can be negative, comma-separated, or decimal
+                } else if (isNumberCol[j] && !data.match(/^(\s*-?(\d|,| |[.])*\s*)$/)) { //number can be negative, comma/period-separated, or decimal
                     isNumberCol[j] = false;
                 }
             }
