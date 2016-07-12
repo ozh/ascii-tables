@@ -1,5 +1,5 @@
 .jumbotron {
-    padding-top: 0px;
+    padding: 0px;
 }
 
 header a, footer a {
@@ -24,67 +24,29 @@ header #title  {
     display:none;
 }
 
-header #icon {
-    float:left;
+#icon {
+	color: #1F669C;
     margin-top:35px;
 }
 
+header h1 {
+	margin: 0px;
+}
+
 header pre {
-    float:left;
     background-color: transparent;
     border: 0px;
     color: #FFFFFF;
     font-weight: 900;
+    text-decoration: none;
 }
 
 html, body {
     height: 100%;
 }
-
-#wrap {
-    min-height: 100%;
-    height: auto;
-    margin: 0 auto -60px;
-    padding: 0 0 60px;
-}
-
-#controls {
-    margin-top: 10px;
-    width: 400px;
-}
-
-    #controls label {
-        float: left;
-        display:block;
-        margin:6px 10px 0 30px;
-        width:100px;
-    }
     
-    #controls div div {
-        margin-left:140px;
-    }
-
-    #controls select {
-        width: 200px;
-    }
-
-    #controls input {
-        width: auto;
-        display:block;
-    }
-    
-button {
-    margin-left: 125px;
-    margin-top: 15px;
-    margin-bottom: 15px;
-}
-
 .fixed-width {
     font-family: courier new, monospace;
-}
-
-#outputTbl {
-    margin-top: 30px;
 }
 
 footer {
@@ -100,4 +62,16 @@ header, footer {
 
 abbr[title] {
     border-bottom: 1px dotted #eee;
+}
+
+textarea
+{
+    overflow-x:scroll;
+    overflow-y:scroll;
+}
+
+#auto-format
+{
+	background-color: inherit;
+	margin: 0px;
 }
