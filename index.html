@@ -31,7 +31,8 @@
         
         
 <h2>Input</h2>
-
+<p id="saveMsg"></p>
+<button class="btn btn-sm btn-primary" style="margin-left: 0px !important; margin-bottom: 10px;" id="loadDefault">Reset</button>
 <div>
 
     <textarea class="form-control fixed-width " rows="5" id="input" onchange="createTable()" onkeyup="createTable()">Col1	Col2	Col3	Numeric Column
@@ -89,9 +90,8 @@ This is a row with only one cell</textarea>
 
     </div>
     
-        <button class="btn bt-lg btn-primary" onclick="createTable()">Create Table</button>
+        <button id="OutputTable" class="btn bt-lg btn-primary" onclick="createTable()">Create Table</button>
 </div>
-
 
 <h2>Output:</h2>
 <div id="outputText" >
@@ -114,4 +114,59 @@ This is a row with only one cell</textarea>
     </footer>
 
     </body>
+
+
+    <script>
+        function setCookie(cname, cvalue, exdays) {
+            var d = new Date();
+            d.setTime(d.getTime() + (exdays*24*60*60*1000)); //makes the cookie
+            var expires = "expires="+ d.toUTCString();
+            document.cookie = cname + "=" + cvalue + "; " + expires + ';path=/';
+        }
+
+        function getCookie(cookieName) { //gets the right cookie
+            var name = cookieName + "=";
+            var cookieArray = document.cookie.split(';');
+
+            for(var i = 0; i < cookieArray.length; i++) {
+                if (cookieArray[i].includes(cookieName))
+                {
+                    var cookie = cookieArray[i];
+                    return cookie.substring(name.length);
+                }
+            }
+            return '';
+        }
+
+        $(function(){
+            var cookie = getCookie('asciiTable');
+            var returnChar = 'retVal121'; //This is the text that will replace returns in the Cookie. You can replace this with whatever you want
+
+            if (cookie === ''){ //if the cookie doesn't exist yet
+                setCookie('asciiTable', 'Placeholder', 99999);
+                location.reload(); //just to make sure the cookie is enforced
+            }
+            else
+            {
+                if (cookie !== 'Placeholder')
+                {
+                    $('#saveMsg').text('Save has been loaded!');
+                    $('#input').text(cookie.replace(/( retVal121 )/g, '\r\n'));
+                } 
+                else 
+                {
+                    $('#input').text('Col1    Col2    Col3\r\nValue1    Value2    123\r\nSeparate    cols    with a tab or 4 spaces\r\nThis is a row with only one cell');
+                }
+            }
+
+            $('#input').on('input', function(){
+                setCookie('asciiTable', $('#input').val().replace(/(?:\r\n|\r|\n)/g, " " + returnChar + " "), 99999);
+            });
+
+            $('#loadDefault').click(function(){
+                setCookie('asciiTable', 'Placeholder', 99999);
+                location.reload();
+            })
+        })
+    </script>
 </html>
