@@ -325,7 +325,7 @@ function createTable() {
 function outputAsNormalTable(rows, hasHeaders, colLengths, separator) {
     var output = "";
 
-    var $outputTable = $('<table border="1" cellpadding="1" cellspacing="1">');
+    var $outputTable = $('<table border="1" cellpadding="1" cellspacing="1" align="center">');
     for (var i = 0; i < rows.length; i++) {
         var cols = rows[i].split(separator);
         var tag = (hasHeaders && i == 0) ? "th" : "td";
