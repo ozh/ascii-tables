@@ -336,11 +336,14 @@ function outputAsNormalTable(rows, hasHeaders, colLengths, separator) {
             $row.append($cell);
         }
     }
+    // format the html to display for user
+    $('#output').val('<table border="1" cellpadding="1" cellspacing="1" align="center">' + $outputTable.html().replace(/<tr>/g,'\n\t<tr>').replace(/<td>/g,'\n\t\t<td>').replace(/<th>/g,'\n\t\t<th>').replace(/<\/tr>/g,'\n\t</tr>').replace(/<\/tbody>/g,'\n</tbody>') + '</table>');
+    $('#outputText').show();
+
+    // Render the html table on the page
     var $outputDiv = $('#outputTbl');
     $outputDiv.empty();
     $outputDiv.append($outputTable);
-    $('#output').val('<table>' + $outputTable.html() + '</table>');
-    $('#outputText').show();
     $('#outputTbl').show();
 }
 
