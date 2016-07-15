@@ -1,450 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
 
-$(function() {
-    // allow tab key to be used in the text area
-    $('#input').keydown(function(e) {
-        // http://stackoverflow.com/questions/1738808/keypress-in-jquery-press-tab-inside-textarea-when-editing-an-existing-text/1738888#1738888
-        if (e.keyCode == 9) {
-            var myValue = "\t";
-            var startPos = this.selectionStart;
-            var endPos = this.selectionEnd;
-            var scrollTop = this.scrollTop;
-            this.value = this.value.substring(0, startPos) + myValue + this.value.substring(endPos, this.value.length);
-            this.focus();
-            this.selectionStart = startPos + myValue.length;
-            this.selectionEnd = startPos + myValue.length;
-            this.scrollTop = scrollTop;
+<head>
+  <meta charset="utf-8">
+  <title>ASCII Table Generator &ndash; Quickly format ASCII table. Great for source code comments and markdown!</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="assets/css/bootstrap.min.css" rel="stylesheet">
+  <link href="assets/css/style.css" rel="stylesheet">
+  <link href="assets/css/font-awesome.min.css" rel="stylesheet">
+  <script src="assets/js/jquery.min.js"></script>
+  <script src="assets/js/script.js"></script>
+  <script src="assets/js/bootstrap.min.js"></script>
+  <style>
+  div {
+	/*border:1px solid black;*/
+  }
+  </style>
+</head>
 
-            e.preventDefault();
-        }
-    });
-});
+<body class="dashboard" onload="createTable()">
+  <div class="container-fluid" id="main">
+    <div class="row">
+      <header class="jumbotron">
+        <div class="row">
+          <div class="col-xs-1 col-xs-offset-1 text-right">
+            <h1><a href=""><i id="icon" class="fa fa-table"></i><span id="title">ASCII Table Generator</span></a></h1>
+          </div>
+          <div class="col-xs-10">
+            <h1><a href=""><pre>    _             _ _   _____     _     _
+   / \   ___  ___(_|_) |_   _|_ _| |__ | | ___
+  / _ \ / __|/ __| | |   | |/ _` | '_ \| |/ _ \
+ / ___ \\__ \ (__| | |   | | (_| | |_) | |  __/
+/_/   \_\___/\___|_|_|   |_|\__,_|_.__/|_|\___|</pre></a></h1>
+          </div>
+        </div>
 
-function createTable() {
-    // set up the style
-    var cTL, cTM, cTR;
-    var cML, cMM, cMR;
-    var cBL, cBM, cBR;
-    var hdV, hdH;
-    var spV, spH;
+        <div class="row">
+          <div class="col-xs-11 col-xs-offset-1">
+            <p>Quickly format ASCII table. Great for <span>source code comments</span> and <span>Github Markdown</span>!</p>
+          </div>
+        </div>
+      </header>
+    </div>
+    <div class="row">
+      <div class="col-xs-3 col-sm-2 text-center">
+        <h2>Input</h2>
+        <div class="row">
+          <button class="btn btn-lg btn-danger" id="loadDefault" onclick="loadDefault()">Reset <i class="fa fa-table"></i></button>
+        </div>
+      </div>
+      <div class="col-xs-9">
+        <div class="row">
+          <textarea class="form-control fixed-width " rows="5" wrap="off" id="input" onchange="createTable()" onkeyup="createTable()">Col1	Col2	Col3	Numeric Column
+Value 1	Value 2	123	10.0
+Separate	cols    with a tab or 4 spaces	-2,027.1
+This is a row with only one cell</textarea>
+        </div>
+      </div>
+    </div>
+    <div class="row text-center">
+      <div class="well well-sm col-xs-10 col-xs-offset-1 col-sm-9 col-md-8 col-lg-offset-2 col-lg-6 col-lg-offset-3">
+        <div class="col-xs-1">
+		  <h2 title="Settings" id="settings"><i class="fa fa-gear"></i></h2>
+		</div>
+        <div class="col-xs-6">
+          <div class="row">
+            <label for="hdr-style" class="control-label" title="Select what should be used as a header">Header Location:
+				<select id="hdr-style" onchange="createTable()" onselect="createTable()">
+					<option value="none">None</option>
+					<option value="top" selected="true">First Row</option>
+					<option value="ssheet">Spreadsheet</option>
+				</select>
+			</label>
+          </div>
+          <div class="row">
+            <label for="style" class="control-label" title="Select the output format of the table">Output Style:
+				<select id="style" onchange="createTable()">
+					<option value="mysql">ASCII (mysql style)</option>
+					<option value="separated">ASCII (separated)</option>
+					<option value="compact">ASCII (compact)</option>
+					<option value="gfm">Github Markdown</option>
+					<option value="rounded">ASCII (rounded)</option>
+					<option value="bubbles">ASCII (bubbles)</option>
+					<option value="girder">ASCII (girder)</option>
+					<option value="dots">ASCII (dots)</option>
+					<option value="unicode">Unicode</option>
+					<option value="restructured">reStructuredText</option>
+					<option value="wikim">Wikimedia</option>
+					<option value="html">HTML</option>
+				</select>
+			</label>
+          </div>
+        </div>
+        <div class="col-xs-5">
+          <div class="row">
+            <label for="auto-format" class="control-label" title="Center the headers and right-align numbers in the output table">Auto-Format: 
+            <input id="auto-format" checked="true" type="checkbox" title="Center the headers and right-align numbers in the output table" onchange="createTable()"></label>
+          </div>
+          <div class="row">
+            <label for="separator" class="control-label" title="Identify character for custom separator, default is the tab character">Custom Separator: 
+            <input id="separator" type="text" name="separator" maxlength="1" size="1" onfocus="this.value = '';createTable()" onkeyup="createTable()"
+            /></label>
+          </div>
+        </div>
+      </div>
+    </div>
 
-    var headerStyle = $('#hdr-style').val();
-    var autoFormat = $('#auto-format').is(':checked');
-    var hasHeaders = headerStyle == "top";
-    var spreadSheetStyle = headerStyle == "ssheet";
-    var input = $('#input').val();
-	var separator = $('#separator').val();
-	
-	if (separator == "") {
-		//Default separator is the tab
-		separator = "\t";
-	} 
+    <div class="row">
+      <div class="col-xs-3 col-sm-2 text-center">
+        <div class="row">
+          <h2>Output</h2>
+        </div>
+        <div class="row">
+          <button class="btn btn-lg btn-primary" onclick="parseTableClick()">Parse <i class="fa fa-table"></i></button>
+        </div>
+      </div>
+      <div class="col-xs-9">
+        <div id="outputText" class="row">
+          <textarea id="output" class="form-control fixed-width" rows="8" wrap="off"></textarea>
+        </div>
+      </div>
+    </div>
 
-    var rows = input.split(/[\r\n]+/);
-    if (rows[rows.length - 1] == "") {
-        // extraneous last row, so delete it
-        rows.pop();
-    }
-    
-    if (spreadSheetStyle) {
-        hasHeaders = true;
-        // add the row numbers
-        for (var i = 0; i < rows.length; i++) {
-            rows[i] = (i+1) + separator + rows[i];
-        }
-    }    
-
-    // calculate the max size of each column
-    var colLengths = [];
-    var isNumberCol = [];
-    for (var i = 0; i < rows.length; i++) {
-		if (separator == "\t") {
-			rows[i] = rows[i].replace(/(    )/g, "\t");
-		} else {
-			//Tab is not the separator, replace tabs with single characters to keep correct spacing
-			rows[i] = rows[i].replace(/\t/g, "    ");
-		}
-        var cols = rows[i].split(separator);
-        for (var j = 0; j < cols.length; j++) {
-            var data = cols[j];
-            var isNewCol = colLengths[j] == undefined;
-            if (isNewCol) {
-                isNumberCol[j] = true;
-            }
-            // keep track of which columns are numbers only
-            if (autoFormat) {
-                if (hasHeaders && i == 0 && !spreadSheetStyle) {
-                    ; // a header is allowed to not be a number (exclude spreadsheet because the header hasn't been added yet
-                } else if (isNumberCol[j] && !data.match(/^(\s*-?(\d|,| |[.])*\s*)$/)) { //number can be negative, comma/period-separated, or decimal
-                    isNumberCol[j] = false;
-                }
-            }
-            if (isNewCol || colLengths[j] < data.length) {
-               colLengths[j] = data.length;
-            }
-        }
-    }
-    
-    if (spreadSheetStyle) {    
-        // now that we have the number of columns, add the letters
-        var colCount = colLengths.length;
-        var letterRow = " "; // initial column will have a space
-        for (var i = 0; i < colCount; i++) {
-            var asciiVal = (65 + i);
-            if (90 < asciiVal) {
-                asciiVal = 90; // Z is the max column
-            }
-            letterRow += separator + String.fromCharCode(asciiVal);
-        }
-        rows.splice(0, 0, letterRow); // add as first row
-    }
-
-    var style = $('#style').val();
-	var hasLineSeparators = false; // Defaults to no separator lines btwn data rows
-	var hasTopLine = true; // Defaults to including the topmost line
-	var hasBottomLine = true; // Defaults to including the bottom-most line
-	var hasRightSide = true; // Defaults to including the right side line
-	var align; // Default alignment: left-aligned
-    switch (style) {
-    case "mysql":
-        // ascii mysql style
-        cTL = "+"; cTM = "+"; cTR = "+";
-        cML = "+"; cMM = "+"; cMR = "+";
-        cBL = "+"; cBM = "+"; cBR = "+";
-
-        hdV = "|"; hdH = "-"; 
-        spV = "|"; spH = "-"; 
-        break;
-    case "separated":
-        // ascii 2
-		hasLineSeparators = true;
-        cTL = "+"; cTM = "+"; cTR = "+";
-        cML = "+"; cMM = "+"; cMR = "+";
-        cBL = "+"; cBM = "+"; cBR = "+";
-
-        hdV = "|"; hdH = "="; 
-        spV = "|"; spH = "-"; 
-        break;
-	case "compact":
-        // ascii - compact
-		hasTopLine = false;
-		hasBottomLine = false;
-        cML = " "; cMM = " "; cMR = " ";
-        hdV = " "; hdH = "-"; 
-        spV = " "; spH = "-"; 
-        break;
-    case "rounded":
-        // ascii rounded style
-		hasLineSeparators = true;
-        cTL = "."; cTM = "."; cTR = ".";
-        cML = ":"; cMM = "+"; cMR = ":";
-        cBL = "'"; cBM = "'"; cBR = "'";
-
-        hdV = "|"; hdH = "-"; 
-        spV = "|"; spH = "-"; 
-        break;
-    case "girder":
-        // ascii rounded style
-        cTL = "//"; cTM = "[]"; cTR = "\\\\";
-        cML = "|]"; cMM = "[]"; cMR = "[|";
-        cBL = "\\\\"; cBM = "[]"; cBR = "//";
-
-        hdV = "||"; hdH = "="; 
-        spV = "||"; spH = "="; 
-        break;
-    case "bubbles":
-        // ascii bubbled style
-        cTL = " o8"; cTM = "(_)"; cTR = "8o ";
-        cML = "(88"; cMM = "(_)"; cMR = "88)";
-        cBL = " O8"; cBM = "(_)"; cBR = "8O ";
-
-        hdV = "(_)"; hdH = "8"; 
-        spV = "(_)"; spH = "o"; 
-        break;
-    case "dots":
-        // ascii dotted style
-        cTL = "."; cTM = "."; cTR = ".";
-        cML = ":"; cMM = ":"; cMR = ":";
-        cBL = ":"; cBM = ":"; cBR = ":";
-        sL  = ":"; sM  = "."; sR  = ":";
-
-        hdV = ":"; hdH = "."; 
-		spV = ":"; spH = "."; 
-        break;
-    case "gfm":
-        // github markdown
-		hasTopLine = false;
-		hasBottomLine = false;
-        cTL = "|"; cTM = "|"; cTR = "|";
-        cML = "|"; cMM = "|"; cMR = "|";
-        cBL = "|"; cBM = "|"; cBR = "|";
-
-        hdV = "|"; hdH = "-"; 
-        spV = "|"; spH = "-"; 
-        break;
-    case "wikim":
-        // wikimedia
-		hasLineSeparators = true;
-		hasRightSide = false;
-		autoFormat = false;
-		align = "l";
-        cTL = '{| class="wikitable"'; cTM = ""; cTR = "";
-        cML = "|-"; cMM = ""; cMR = "";
-        cBL = ""; cBM = ""; cBR = "|}";
-
-        hdV = "\n!"; hdH = ""; 
-        spV = "\n|"; spH = ""; 
-        break;
-    case "restructured":
-        // restructured table
-        cTL = " "; cTM = " "; cTR = " ";
-        cML = " "; cMM = " "; cMR = " ";
-        cBL = " "; cBM = " "; cBR = " ";
-
-        hdV = " "; hdH = "="; 
-        spV = " "; spH = "="; 
-        break;
-    case "unicode":
-        // unicode
-        cTL = "\u2554"; cTM = "\u2566"; cTR = "\u2557";
-        cML = "\u2560"; cMM = "\u256C"; cMR = "\u2563";
-        cBL = "\u255A"; cBM = "\u2569"; cBR = "\u255D";
-
-        hdV = "\u2551"; hdH = "\u2550"; 
-        spV = "\u2551"; spH = "\u2550"; 
-        break;
-    case "html":
-        outputAsNormalTable(rows, hasHeaders, colLengths, separator);
-        return;
-    default:
-        break;
-    }
-
-    // output the text
-    var output = "";
-	
-	// output the top most row
-	// Ex: +---+---+
-	if (hasTopLine ) {
-		for (var j = 0; j <= colLengths.length; j++) {
-			if ( !hasHeaders ) {
-				hdH = spH;
-			}
-			if ( j == 0 ) {
-				output += cTL + _repeat(hdH, colLengths[j] + 2);
-			} else if ( j < colLengths.length ) {
-				output += cTM + _repeat(hdH, colLengths[j] + 2);
-			} else if (hasRightSide) {
-				output += cTR + "\n";
-			} else {
-				output += "\n";
-			}
-		}
-	}
-
-    for (var i = 0; i < rows.length; i++) {
-		// Separator Rows
-		if (hasHeaders && i == 1 ) { 
-			// output the header separator row
-			for (var j = 0; j <= colLengths.length; j++) {
-				if ( j == 0) {
-					output += cML + _repeat(hdH, colLengths[j] + 2);
-				} else if (j < colLengths.length) {
-					output += cMM + _repeat(hdH, colLengths[j] + 2);
-				} else if (hasRightSide) {
-					output += cMR + "\n";
-				} else {
-					output += "\n";
-				}
-			}
-		} else if ( hasLineSeparators && i < rows.length ) { 
-			// output line separators
-			if( ( !hasHeaders && i >= 1 ) || ( hasHeaders && i > 1 ) ) {
-				for (var j = 0; j <= colLengths.length; j++) {
-					if ( j == 0 ) {
-						output += cML + _repeat(spH, colLengths[j] + 2);
-					} else if ( j < colLengths.length ) {
-						output += cMM + _repeat(spH, colLengths[j] + 2);
-					} else if (hasRightSide) {
-						output += cMR + "\n";
-					} else {
-						output += "\n";
-					}
-				}
-			}
-		}
-
-		for (var j = 0; j <= colLengths.length; j++) {
-			// output the data
-			var cols = rows[i].split(separator);
-			var data = cols[j] || "";
-			if (autoFormat) {
-				if (hasHeaders && i == 0) {
-					align = "c";
-				} else if (isNumberCol[j]) {
-					align = "r";
-				} else {
-					align = "l";
-				}
-			}
-			if (hasHeaders && i == 0 ) { 
-				verticalBar = hdV;
-			} else {
-				verticalBar = spV;
-			}
-			if ( j < colLengths.length ) {
-				data = _pad(data, colLengths[j], " ", align);
-				output += verticalBar + " " + data + " ";
-			} else if (hasRightSide) {
-				output += verticalBar + "\n";
-			} else {
-				output += "\n";
-			}
-
-		}
-	}
-	
-	// output the bottom line
-	// Ex: +---+---+
-	if (hasBottomLine ) {
-		for (var j = 0; j <= colLengths.length; j++) {
-			if ( j == 0 ) {
-				output += cBL + _repeat(spH, colLengths[j] + 2);
-			} else if ( j < colLengths.length ) {
-				output += cBM + _repeat(spH, colLengths[j] + 2);
-			} else {
-				output += cBR + "\n";
-			}
-		}
-	}
-
-    $('#output').val(output);
-    $('#outputText').show();
-    $('#outputTbl').hide();
-}
-
-function outputAsNormalTable(rows, hasHeaders, colLengths, separator) {
-    var output = "";
-
-    var $outputTable = $('<table border="1" cellpadding="1" cellspacing="1" align="center">');
-    for (var i = 0; i < rows.length; i++) {
-        var cols = rows[i].split(separator);
-        var tag = (hasHeaders && i == 0) ? "th" : "td";
-        var $row = $('<tr>').appendTo($outputTable);
-        for (var j = 0; j < colLengths.length; j++) {
-            var data = cols[j] || " ";
-            var $cell = $('<' + tag + '>').text(data);
-            $row.append($cell);
-        }
-    }
-    // format the html to display for user
-    $('#output').val('<table border="1" cellpadding="1" cellspacing="1" align="center">' + $outputTable.html().replace(/<tr>/g,'\n\t<tr>').replace(/<td>/g,'\n\t\t<td>').replace(/<th>/g,'\n\t\t<th>').replace(/<\/tr>/g,'\n\t</tr>').replace(/<\/tbody>/g,'\n</tbody>') + '</table>');
-    $('#outputText').show();
-
-    // Render the html table on the page
-    var $outputDiv = $('#outputTbl');
-    $outputDiv.empty();
-    $outputDiv.append($outputTable);
-    $('#outputTbl').show();
-}
-
-function parseTableClick() {
-    var result = parseTable($('#output').val());
-    $('#input').val(result);
-}
-
-function parseTable(table) {
-    var lines = table.split('\n');
-    
-    // first find a seprator line
-    var separatorLine = '';
-    for (var i = 0; i < lines.length; i++) {
-        var line = lines[i];
-        if (isSepratorLine(line)) {
-            separatorLine = line;
-            break;
-        }
-    }
-    
-    if (separatorLine == '') {
-        alert('Error: make sure to include separator lines.');
-        return;
-    }
-    
-    // next, find all column indexes
-    var colIndexes = [];
-    var horizLineChar = separatorLine[1]; // 2nd char is always the repeating char
-    for (var i = 0; i < separatorLine.length; i++) {
-        var char = separatorLine[i];
-        if (char != horizLineChar) {
-            colIndexes.push(i);
-        }
-    }
-    
-    // finally, loop over all items and extract the data
-    var result = "";
-    for (var i = 0; i < lines.length; i++) {
-        var line = lines[i];
-        if (isSepratorLine(line)) {
-            continue;
-        }
-        
-        for (var j = 0; j < colIndexes.length - 1; j++) {
-            var fromCol = colIndexes[j] + 1;
-            var toCol = colIndexes[j+1];
-            var data = line.slice(fromCol, toCol);
-            data = _trim(data);
-            result += data;
-            
-            if (j < colIndexes.length - 2)
-                result += '\t';
-        }
-                
-        if (i < lines.length - 1)
-            result += '\n';
-    }
-
-    return result;
-}
-
-function isSepratorLine(line) {
-    return line.indexOf(" ") == -1; // must not have spaces
-}
-
-function _trim(str) {
-    var rgx = /^\s*(.*?)\s*$/;
-    var result = str.match(rgx);
-    return result[1];
-}
-
-function defValue(value, defaultValue) {
-    return (typeof value === "undefined") ? defaultValue : value;
-}
-
-function _pad(text, length, char, align) {
-    // align: r l or c
-    char = defValue(char, " ");
-    align = defValue(align, "l");
-    var additionalChars = length - text.length;
-    var result = "";
-    switch (align) {
-        case "r":
-            result = _repeat(char, additionalChars) + text;
-            break;
-        case "l":
-            result = text + _repeat(char, additionalChars);
-            break;
-        case "c":
-            var leftSpaces = Math.floor(additionalChars / 2);
-            var rightSpaces = additionalChars - leftSpaces;
-            result = _repeat(char, leftSpaces) + text + _repeat(char,rightSpaces);
-            break;
-        default:
-            assert(false);
-            break;
-    }
-    return result;
-}
-
-function _repeat(str, num) {
-    return new Array(num + 1).join(str);
-}
+    <div id="outputTbl" class="row"></div>
+    <div class="row">
+      <footer>
+        Idea and code base by <a href="http://www.sensefulsolutions.com/2010/10/format-text-as-table.html">Senseful Solutions</a>. Forked by <a href="https://github.com/ozh">Ozh</a> to tweak a few stuff and to add <abbr title="Github Flavored Markdown">GFM</abbr>.
+        See on <a href="https://github.com/ozh/ascii-tables">Github</a>.
+      </footer>
+    </div>
+  </div>
+</body>
+</html>
