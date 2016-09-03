@@ -350,42 +350,54 @@ function parseTableClick() {
 }
 
 function parseTable(table) {
+	var separator = $('#separator').val();
+	
+	if (separator == "") {
+		//Default separator is the tab
+		separator = "\t";
+	} 
+	
     var lines = table.split('\n');
-    
-    // first find a seprator line
-    var separatorLine = '';
-    for (var i = 0; i < lines.length; i++) {
-        var line = lines[i];
-        if (isSepratorLine(line)) {
-            separatorLine = line;
-            break;
+	
+	// discard separator lines
+	for (var i = 0; i < lines.length; i++) {
+		var line = lines[i];
+        if (isSeparatorLine(line)) {
+            lines.splice(i, 1); // only keep non-separator lines
+			i -= 1; // array size changed, decrement index to match
         }
-    }
-    
-    if (separatorLine == '') {
-        alert('Error: make sure to include separator lines.');
-        return;
-    }
-    
-    // next, find all column indexes
+	}
+	
+	// http://stackoverflow.com/questions/6521245/finding-longest-string-in-array
+	var longest = lines.sort(function (a, b) { return b.length - a.length; })[0];
+	
+	// Identify column separators
     var colIndexes = [];
-    var horizLineChar = separatorLine[1]; // 2nd char is always the repeating char
-    for (var i = 0; i < separatorLine.length; i++) {
-        var char = separatorLine[i];
-        if (char != horizLineChar) {
-            colIndexes.push(i);
-        }
-    }
+    for (var j = 0; j < longest.length; j++) {
+		if (isColumnSeparator(lines.slice(), j)) {
+			colIndexes.push(j);
+		}
+	}
+	
+	if (colIndexes.length < 2) {
+		alert("No results parsed. Whitespace is not yet parsable as a column separator.");
+		return lines.join('\n');
+	} else if (colIndexes.length >= longest.length) {
+		alert("No results parsed. Single lines are not yet parsable.");
+		return lines.join('\n');
+	}
+	
+	alert("Parsed rows: " + lines.length + ", length: " + longest.length + ", column locations: " + colIndexes);
     
-    // finally, loop over all items and extract the data
+    // Loop over all items and extract the data
     var result = "";
     for (var i = 0; i < lines.length; i++) {
         var line = lines[i];
-        if (isSepratorLine(line)) {
-            continue;
-        }
-        
         for (var j = 0; j < colIndexes.length - 1; j++) {
+			if (colIndexes[j+1] == colIndexes[j] + 1) {
+				// adjecent columns, skip this column
+				continue;
+			}
             var fromCol = colIndexes[j] + 1;
             var toCol = colIndexes[j+1];
             var data = line.slice(fromCol, toCol);
@@ -393,7 +405,7 @@ function parseTable(table) {
             result += data;
             
             if (j < colIndexes.length - 2)
-                result += '\t';
+                result += separator;
         }
                 
         if (i < lines.length - 1)
@@ -403,8 +415,30 @@ function parseTable(table) {
     return result;
 }
 
-function isSepratorLine(line) {
-    return line.indexOf(" ") == -1; // must not have spaces
+function isColumnSeparator(lines, column) {
+	// Return true if this column is the same character all the way to the last row
+	if (lines.length < 2) {
+		// Last line in array, must be a valid separator
+		return true;
+	} else {
+		var thisLine = lines[0];
+		var nextLine = lines[1];
+		if (column >= thisLine.length) {
+			// Column is out of range, must not be a separator
+			return false;
+		}
+		if (thisLine[column] == nextLine[column] && thisLine[column] != " ") {
+			// Rows match, check next row down
+			return isColumnSeparator(lines.splice(0,1), column);
+		} else {
+			// Rows are different, this is not a separator
+			return false;
+		}
+	}
+}
+
+function isSeparatorLine(line) {
+    return line.trim().indexOf(" ") == -1; // must not have spaces
 }
 
 function _trim(str) {
