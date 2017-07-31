@@ -369,7 +369,8 @@ function parseTable(table) {
 	}
 	
 	// http://stackoverflow.com/questions/6521245/finding-longest-string-in-array
-	var longest = lines.sort(function (a, b) { return b.length - a.length; })[0];
+	var copy_lines = lines.slice(0);
+	var longest = copy_lines.sort(function (a, b) { return b.length - a.length; })[0];
 	
 	// Identify column separators
     var colIndexes = [];
