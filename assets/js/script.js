@@ -212,6 +212,15 @@ function createTable() {
         hdV = "\u2551"; hdH = "\u2550"; 
         spV = "\u2551"; spH = "\u2550"; 
         break;
+    case "unicode_single_line":
+        // unicode one line thick border
+        cTL = "\u250C"; cTM = "\u252C"; cTR = "\u2510";
+        cML = "\u251C"; cMM = "\u253C"; cMR = "\u2524";
+        cBL = "\u2514"; cBM = "\u2534"; cBR = "\u2518";
+
+        hdV = "\u2502"; hdH = "\u2500";
+        spV = "\u2502"; spH = "\u2500";
+        break;
     case "html":
         outputAsNormalTable(rows, hasHeaders, colLengths, separator);
         return;
