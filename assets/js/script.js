@@ -99,6 +99,7 @@ function createTable() {
     }
 
     var style = $('#style').val();
+	var hasHeaderSeparators = true; // Defaults to including a separator line btwn header and data rows
 	var hasLineSeparators = false; // Defaults to no separator lines btwn data rows
 	var hasTopLine = true; // Defaults to including the topmost line
 	var hasBottomLine = true; // Defaults to including the bottom-most line
@@ -181,6 +182,20 @@ function createTable() {
         hdV = "|"; hdH = "-"; 
         spV = "|"; spH = "-"; 
         break;
+    case "jira":
+        // jira markdown
+        hasTopLine = false;
+        hasBottomLine = false;
+        autoFormat = false;
+        hasHeaderSeparators = false;
+
+        cTL = ""; cTM = ""; cTR = "";
+        cML = ""; cMM = ""; cMR = "";
+        cBL = ""; cBM = ""; cBR = "";
+
+        hdV = "||"; hdH = ""; 
+        spV = "|"; spH = ""; 
+        break;
     case "wikim":
         // wikimedia
 		hasLineSeparators = true;
@@ -252,7 +267,7 @@ function createTable() {
 
     for (var i = 0; i < rows.length; i++) {
 		// Separator Rows
-		if (hasHeaders && i == 1 ) { 
+		if (hasHeaders && hasHeaderSeparators && i == 1 ) { 
 			// output the header separator row
 			for (var j = 0; j <= colLengths.length; j++) {
 				if ( j == 0) {
