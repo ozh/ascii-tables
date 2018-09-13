@@ -103,7 +103,9 @@ function createTable() {
 	var hasLineSeparators = false; // Defaults to no separator lines btwn data rows
 	var hasTopLine = true; // Defaults to including the topmost line
 	var hasBottomLine = true; // Defaults to including the bottom-most line
+	var hasLeftSide = true; // Defaults to including the left side line
 	var hasRightSide = true; // Defaults to including the right side line
+	var topLineUsesBodySeparators = false; // Defaults to top line uses the same separators as the line between header and body
 	var align; // Default alignment: left-aligned
     switch (style) {
     case "mysql":
@@ -182,6 +184,42 @@ function createTable() {
         hdV = "|"; hdH = "-"; 
         spV = "|"; spH = "-"; 
         break;
+    case "reddit":
+        // reddit markdown
+		hasTopLine = false;
+		hasBottomLine = false;
+		hasLeftSide = false;
+		hasRightSide = false;
+        cTL = " "; cTM = "|"; cTR = " ";
+        cML = " "; cMM = "|"; cMR = " ";
+        cBL = " "; cBM = "|"; cBR = " ";
+
+        hdV = "|"; hdH = "-"; 
+        spV = "|"; spH = "-"; 
+        break;
+    case "rstGrid":
+        // reStructuredText Grid markup
+		hasTopLine = true;
+		topLineUsesBodySeparators = true;
+		hasBottomLine = true;
+        cTL = "+"; cTM = "+"; cTR = "+";
+        cML = "+"; cMM = "+"; cMR = "+";
+        cBL = "+"; cBM = "+"; cBR = "+";
+
+        hdV = "|"; hdH = "="; 
+        spV = "|"; spH = "-"; 
+        break;
+    case "rstSimple":
+        // reStructuredText Simple markup
+		hasTopLine = true;
+		hasBottomLine = true;
+        cTL = " "; cTM = " "; cTR = " ";
+        cML = " "; cMM = " "; cMR = " ";
+        cBL = " "; cBM = " "; cBR = " ";
+
+        hdV = " "; hdH = "="; 
+        spV = " "; spH = "="; 
+        break;
     case "jira":
         // jira markdown
         hasTopLine = false;
@@ -194,7 +232,7 @@ function createTable() {
         cBL = ""; cBM = ""; cBR = "";
 
         hdV = "||"; hdH = ""; 
-        spV = "|"; spH = ""; 
+        spV = "| "; spH = ""; 
         break;
     case "wikim":
         // wikimedia
@@ -208,15 +246,6 @@ function createTable() {
 
         hdV = "\n!"; hdH = ""; 
         spV = "\n|"; spH = ""; 
-        break;
-    case "restructured":
-        // restructured table
-        cTL = " "; cTM = " "; cTR = " ";
-        cML = " "; cMM = " "; cMR = " ";
-        cBL = " "; cBM = " "; cBR = " ";
-
-        hdV = " "; hdH = "="; 
-        spV = " "; spH = "="; 
         break;
     case "unicode":
         // unicode
@@ -249,14 +278,21 @@ function createTable() {
 	// output the top most row
 	// Ex: +---+---+
 	if (hasTopLine ) {
+		if (topLineUsesBodySeparators || !hasHeaders) {
+			topLineHorizontal = spH;
+		} else {
+			topLineHorizontal = hdH;
+		} 
+		
 		for (var j = 0; j <= colLengths.length; j++) {
-			if ( !hasHeaders ) {
-				hdH = spH;
-			}
 			if ( j == 0 ) {
-				output += cTL + _repeat(hdH, colLengths[j] + 2);
+				if (topLineUsesBodySeparators) {
+					output += cTL + _repeat(topLineHorizontal, colLengths[j] + 2);
+				} else {
+					output += cTL + _repeat(topLineHorizontal, colLengths[j] + 2);
+				}
 			} else if ( j < colLengths.length ) {
-				output += cTM + _repeat(hdH, colLengths[j] + 2);
+				output += cTM + _repeat(topLineHorizontal, colLengths[j] + 2);
 			} else if (hasRightSide) {
 				output += cTR + "\n";
 			} else {
@@ -270,7 +306,9 @@ function createTable() {
 		if (hasHeaders && hasHeaderSeparators && i == 1 ) { 
 			// output the header separator row
 			for (var j = 0; j <= colLengths.length; j++) {
-				if ( j == 0) {
+				if ( j == 0 && !hasLeftSide) {
+					output += _repeat(hdH, colLengths[j] + 2);
+				} else if ( j == 0) {
 					output += cML + _repeat(hdH, colLengths[j] + 2);
 				} else if (j < colLengths.length) {
 					output += cMM + _repeat(hdH, colLengths[j] + 2);
@@ -317,7 +355,11 @@ function createTable() {
 			}
 			if ( j < colLengths.length ) {
 				data = _pad(data, colLengths[j], " ", align);
-				output += verticalBar + " " + data + " ";
+				if (j == 0 && !hasLeftSide) {
+					output += " " + data + " ";
+				} else {
+					output += verticalBar + " " + data + " ";
+				}
 			} else if (hasRightSide) {
 				output += verticalBar + "\n";
 			} else {

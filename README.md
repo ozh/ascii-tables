@@ -49,6 +49,53 @@ Press **Create Table** to get something like:
   This is a row with only one cell                                                      
 ```
 
+### ASCII table (Github Markdown style)
+```
+|               Col1               |  Col2   |          Col3          | Numeric Column |
+|----------------------------------|---------|------------------------|----------------|
+| Value 1                          | Value 2 | 123                    |           10.0 |
+| Separate                         | cols    | with a tab or 4 spaces |       -2,027.1 |
+| This is a row with only one cell |         |                        |                |
+```
+
+### ASCII table (Reddit Markdown style)
+```
+               Col1               |  Col2   |          Col3          | Numeric Column 
+----------------------------------|---------|------------------------|----------------
+ Value 1                          | Value 2 | 123                    |           10.0 
+ Separate                         | cols    | with a tab or 4 spaces |       -2,027.1 
+ This is a row with only one cell |         |                        |                
+```
+
+### ASCII table ([reStructuredText](http://docutils.sourceforge.net/docs/ref/rst/restructuredtext.html#tables) Grid style)
+```
++----------------------------------+---------+------------------------+----------------+
+|               Col1               |  Col2   |          Col3          | Numeric Column |
++==================================+=========+========================+================+
+| Value 1                          | Value 2 | 123                    |           10.0 |
+| Separate                         | cols    | with a tab or 4 spaces |       -2,027.1 |
+| This is a row with only one cell |         |                        |                |
++----------------------------------+---------+------------------------+----------------+
+```
+
+### ASCII table ([reStructuredText](http://docutils.sourceforge.net/docs/ref/rst/restructuredtext.html#tables) Simple style)
+```
+ ================================== ========= ======================== ================ 
+                Col1                  Col2              Col3            Numeric Column  
+ ================================== ========= ======================== ================ 
+  Value 1                            Value 2   123                                10.0  
+  Separate                           cols      with a tab or 4 spaces         -2,027.1  
+  This is a row with only one cell                                                      
+ ================================== ========= ======================== ================ 
+```
+
+### ASCII table (Jira style)
+```
+|| Col1                             || Col2    || Col3                   || Numeric Column ||
+|  Value 1                          |  Value 2 |  123                    |  10.0           | 
+|  Separate                         |  cols    |  with a tab or 4 spaces |  -2,027.1       | 
+|  This is a row with only one cell |          |                         |                 | 
+```
 
 ### ASCII table (rounded style)
 ```
@@ -138,16 +185,6 @@ Press **Create Table** to get something like:
 | This is a row with only one cell |         |                        |                |
 ```
 
-### reStructuredText table
-```
- ================================== ========= ======================== ================ 
-                Col1                  Col2              Col3            Numeric Column  
- ================================== ========= ======================== ================ 
-  Value 1                            Value 2   123                                10.0  
-  Separate                           cols      with a tab or 4 spaces         -2,027.1  
-  This is a row with only one cell                                                      
- ================================== ========= ======================== ================ 
-```
 ### Wikimedia markup
 
 ### Or even a boring html &lt;table>
