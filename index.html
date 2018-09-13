@@ -43,7 +43,7 @@
       <div class="col-xs-3 col-sm-2 text-center">
         <h2>Input</h2>
         <div class="row">
-          <button class="btn btn-lg btn-danger" id="loadDefault" onclick="loadDefault()">Reset <i class="fa fa-table"></i></button>
+          <button class="btn btn-lg btn-primary" onclick="createTable()">Create <i class="fa fa-table"></i></button>
         </div>
       </div>
       <div class="col-xs-9">
@@ -57,9 +57,9 @@ This is a row with only one cell</textarea>
     </div>
     <div class="row text-center">
       <div class="well well-sm col-xs-10 col-xs-offset-1 col-sm-9 col-md-8 col-lg-offset-2 col-lg-6 col-lg-offset-3">
-        <div class="col-xs-1">
-		  <h2 title="Settings" id="settings"><i class="fa fa-gear"></i></h2>
-		</div>
+        <div class="col-xs-1"><h2 title="Settings" id="settings"><i class="fa fa-gear"></i></h2>
+          
+        </div>
         <div class="col-xs-6">
           <div class="row">
             <label for="hdr-style" class="control-label" title="Select what should be used as a header">Header Location:
@@ -77,12 +77,16 @@ This is a row with only one cell</textarea>
 					<option value="separated">ASCII (separated)</option>
 					<option value="compact">ASCII (compact)</option>
 					<option value="gfm">Github Markdown</option>
+					<option value="reddit">Reddit Markdown</option>
+					<option value="rstGrid">restructuredText Grid</option>
+					<option value="rstSimple">restructuredText Simple</option>
+					<option value="jira">Jira</option>
 					<option value="rounded">ASCII (rounded)</option>
 					<option value="bubbles">ASCII (bubbles)</option>
 					<option value="girder">ASCII (girder)</option>
 					<option value="dots">ASCII (dots)</option>
 					<option value="unicode">Unicode</option>
-					<option value="restructured">reStructuredText</option>
+					<option value="unicode_single_line">Unicode (single line)</option>
 					<option value="wikim">Wikimedia</option>
 					<option value="html">HTML</option>
 				</select>
