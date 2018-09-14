@@ -108,6 +108,66 @@ function createTable() {
 	var hasRightSide = true; // Defaults to including the right side line
 	var topLineUsesBodySeparators = false; // Defaults to top line uses the same separators as the line between header and body
 	var align; // Default alignment: left-aligned
+		
+	// Add comment/remark indicators for use in code":
+	prefix = "";
+	suffix = "";
+    switch (commenting) {
+    case "none":
+        break;
+    case "doubleslant":
+		// C++/C#/F#/Java/JavaScript/Swift
+		prefix = "// ";
+        break;
+    case "hash":
+		// Perl/PowerShell/Python/R/Ruby
+		prefix = "# ";
+        break;
+    case "doubledash":
+		// ada/AppleScript/Haskell/Lua/SQL
+		prefix = "-- ";
+        break;
+    case "percent":
+		// MATLAB
+		prefix = "% ";
+        break;
+    case "singlespace":
+		// wikimedia
+		prefix = " ";
+        break;
+    case "quadspace":
+		// reddit
+		prefix = "    ";
+        break;
+    case "singlequote":
+		// VBA
+		prefix = "' ";
+        break;
+    case "rem":
+		// BASIC/DOS batch file
+		prefix = "REM ";
+        break;
+    case "c":
+		// Fortran IV
+		prefix = "C ";
+        break;
+    case "exclamation":
+		// Fortran 90 
+		prefix = "! ";
+        break;
+    case "slantsplat":
+		// CSS 
+		prefix = "/* ";
+		suffix = " */";
+        break;
+    case "xml":
+		// XML 
+		prefix = "<!-- ";
+		suffix = " -->";
+        break;
+    default:
+        break;
+    }
 	
 	// Map of variable locations in the output:
 	// 
@@ -258,6 +318,10 @@ function createTable() {
 
         hdV = "\n!"; hdH = ""; 
         spV = "\n|"; spH = ""; 
+		
+		// also remove prefix/suffix:
+		prefix = "";
+		suffix = "";
         break;
     case "unicode":
         // unicode
@@ -280,66 +344,6 @@ function createTable() {
     case "html":
         outputAsNormalTable(rows, hasHeaders, colLengths, separator);
         return;
-    default:
-        break;
-    }
-	
-	// Add comment/remark indicators for use in code":
-	prefix = "";
-	suffix = "";
-    switch (commenting) {
-    case "none":
-        break;
-    case "doubleslant":
-		// C++/C#/F#/Java/JavaScript/Swift
-		prefix = "// ";
-        break;
-    case "hash":
-		// Perl/PowerShell/Python/R/Ruby
-		prefix = "# ";
-        break;
-    case "doubledash":
-		// ada/AppleScript/Haskell/Lua/SQL
-		prefix = "-- ";
-        break;
-    case "percent":
-		// MATLAB
-		prefix = "% ";
-        break;
-    case "singlespace":
-		// wikimedia
-		prefix = " ";
-        break;
-    case "quadspace":
-		// reddit
-		prefix = "    ";
-        break;
-    case "singlequote":
-		// VBA
-		prefix = "' ";
-        break;
-    case "rem":
-		// BASIC/DOS batch file
-		prefix = "REM ";
-        break;
-    case "c":
-		// Fortran IV
-		prefix = "C ";
-        break;
-    case "exclamation":
-		// Fortran 90 
-		prefix = "! ";
-        break;
-    case "slantsplat":
-		// CSS 
-		prefix = "/* ";
-		suffix = " */";
-        break;
-    case "xml":
-		// XML 
-		prefix = "<!-- ";
-		suffix = " -->";
-        break;
     default:
         break;
     }
