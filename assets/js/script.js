@@ -33,6 +33,7 @@ function createTable() {
     var spreadSheetStyle = headerStyle == "ssheet";
     var input = $('#input').val();
 	var separator = $('#separator').val();
+	var commenting = $('#commenting').val();
 	
 	if (separator == "") {
 		//Default separator is the tab
@@ -107,6 +108,17 @@ function createTable() {
 	var hasRightSide = true; // Defaults to including the right side line
 	var topLineUsesBodySeparators = false; // Defaults to top line uses the same separators as the line between header and body
 	var align; // Default alignment: left-aligned
+	
+	// Map of variable locations in the output:
+	// 
+	// [cTL]   [hdH]  [cTM]   [hdH]  [cTR]
+	// [hdV] Header 1 [hdV] Header 2 [hdV]
+	// [cML]   [hdH]  [cMM]   [hdH]  [cMR]
+	// [spV] Value 1  [spV] Value 2  [spV]
+	// [cML]   [spH]  [cMM]   [spH]  [cMR]
+	// [spV] Value 1a [spV] Value 2a [spV]
+	// [cBL]   [spH]  [cBM]   [spH]  [cBR]
+	
     switch (style) {
     case "mysql":
         // ascii mysql style
@@ -271,6 +283,66 @@ function createTable() {
     default:
         break;
     }
+	
+	// Add comment/remark indicators for use in code":
+	prefix = "";
+	suffix = "";
+    switch (commenting) {
+    case "none":
+        break;
+    case "doubleslant":
+		// C++/C#/F#/Java/JavaScript/Swift
+		prefix = "// ";
+        break;
+    case "hash":
+		// Perl/PowerShell/Python/R/Ruby
+		prefix = "# ";
+        break;
+    case "doubledash":
+		// ada/AppleScript/Haskell/Lua/SQL
+		prefix = "-- ";
+        break;
+    case "percent":
+		// MATLAB
+		prefix = "% ";
+        break;
+    case "singlespace":
+		// wikimedia
+		prefix = " ";
+        break;
+    case "quadspace":
+		// reddit
+		prefix = "    ";
+        break;
+    case "singlequote":
+		// VBA
+		prefix = "' ";
+        break;
+    case "rem":
+		// BASIC/DOS batch file
+		prefix = "REM ";
+        break;
+    case "c":
+		// Fortran IV
+		prefix = "C ";
+        break;
+    case "exclamation":
+		// Fortran 90 
+		prefix = "! ";
+        break;
+    case "slantsplat":
+		// CSS 
+		prefix = "/* ";
+		suffix = " */";
+        break;
+    case "xml":
+		// XML 
+		prefix = "<!-- ";
+		suffix = " -->";
+        break;
+    default:
+        break;
+    }
 
     // output the text
     var output = "";
@@ -283,60 +355,26 @@ function createTable() {
 		} else {
 			topLineHorizontal = hdH;
 		} 
-		
-		for (var j = 0; j <= colLengths.length; j++) {
-			if ( j == 0 ) {
-				if (topLineUsesBodySeparators) {
-					output += cTL + _repeat(topLineHorizontal, colLengths[j] + 2);
-				} else {
-					output += cTL + _repeat(topLineHorizontal, colLengths[j] + 2);
-				}
-			} else if ( j < colLengths.length ) {
-				output += cTM + _repeat(topLineHorizontal, colLengths[j] + 2);
-			} else if (hasRightSide) {
-				output += cTR + "\n";
-			} else {
-				output += "\n";
-			}
-		}
+		output += getSeparatorRow(colLengths, cTL, cTM, cTR, topLineHorizontal, prefix, suffix)
 	}
 
     for (var i = 0; i < rows.length; i++) {
 		// Separator Rows
 		if (hasHeaders && hasHeaderSeparators && i == 1 ) { 
 			// output the header separator row
-			for (var j = 0; j <= colLengths.length; j++) {
-				if ( j == 0 && !hasLeftSide) {
-					output += _repeat(hdH, colLengths[j] + 2);
-				} else if ( j == 0) {
-					output += cML + _repeat(hdH, colLengths[j] + 2);
-				} else if (j < colLengths.length) {
-					output += cMM + _repeat(hdH, colLengths[j] + 2);
-				} else if (hasRightSide) {
-					output += cMR + "\n";
-				} else {
-					output += "\n";
-				}
-			}
+			output += getSeparatorRow(colLengths, cML, cMM, cMR, hdH, prefix, suffix)
 		} else if ( hasLineSeparators && i < rows.length ) { 
 			// output line separators
 			if( ( !hasHeaders && i >= 1 ) || ( hasHeaders && i > 1 ) ) {
-				for (var j = 0; j <= colLengths.length; j++) {
-					if ( j == 0 ) {
-						output += cML + _repeat(spH, colLengths[j] + 2);
-					} else if ( j < colLengths.length ) {
-						output += cMM + _repeat(spH, colLengths[j] + 2);
-					} else if (hasRightSide) {
-						output += cMR + "\n";
-					} else {
-						output += "\n";
-					}
-				}
+				output += getSeparatorRow(colLengths, cML, cMM, cMR, spH, prefix, suffix)
 			}
 		}
 
 		for (var j = 0; j <= colLengths.length; j++) {
 			// output the data
+			if (j == 0) {
+				output += prefix;
+			}
 			var cols = rows[i].split(separator);
 			var data = cols[j] || "";
 			if (autoFormat) {
@@ -356,14 +394,14 @@ function createTable() {
 			if ( j < colLengths.length ) {
 				data = _pad(data, colLengths[j], " ", align);
 				if (j == 0 && !hasLeftSide) {
-					output += " " + data + " ";
+					output += "  " + data + " ";
 				} else {
 					output += verticalBar + " " + data + " ";
 				}
 			} else if (hasRightSide) {
-				output += verticalBar + "\n";
+				output += verticalBar + suffix + "\n";
 			} else {
-				output += "\n";
+				output += suffix + "\n";
 			}
 
 		}
@@ -372,21 +410,27 @@ function createTable() {
 	// output the bottom line
 	// Ex: +---+---+
 	if (hasBottomLine ) {
-		for (var j = 0; j <= colLengths.length; j++) {
-			if ( j == 0 ) {
-				output += cBL + _repeat(spH, colLengths[j] + 2);
-			} else if ( j < colLengths.length ) {
-				output += cBM + _repeat(spH, colLengths[j] + 2);
-			} else {
-				output += cBR + "\n";
-			}
-		}
+		output += getSeparatorRow(colLengths, cBL, cBM, cBR, spH, prefix, suffix)
 	}
 
     $('#output').val(output);
     $('#outputText').show();
     $('#outputTbl').hide();
 }
+
+function getSeparatorRow(lengths, left, middle, right, horizontal, prefix, suffix) {
+	rowOutput = prefix;
+	for (var j = 0; j <= lengths.length; j++) {
+		if ( j == 0 ) {
+			rowOutput += left + _repeat(horizontal, lengths[j] + 2);
+		} else if ( j < lengths.length ) {
+			rowOutput += middle + _repeat(horizontal, lengths[j] + 2);
+		} else {
+			rowOutput += right + suffix + "\n";
+		}
+	}
+	return rowOutput;
+};
 
 function outputAsNormalTable(rows, hasHeaders, colLengths, separator) {
     var output = "";
