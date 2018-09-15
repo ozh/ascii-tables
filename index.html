@@ -62,17 +62,30 @@ This is a row with only one cell</textarea>
         </div>
         <div class="col-xs-6">
           <div class="row">
-            <label for="hdr-style" class="control-label" title="Select what should be used as a header">Header Location:
-				<select id="hdr-style" onchange="createTable()" onselect="createTable()">
-					<option value="none">None</option>
-					<option value="top" selected="true">First Row</option>
-					<option value="ssheet">Spreadsheet</option>
+            <label for="inputStyle" class="control-label" title="Select the input format of the table">Input Style:
+				<select id="inputStyle" onchange="createTable()">
+					<option value="none">none (or custom separator)</option>
+					<option value="auto">attempt autodetection</option>
+					<option value="mysql">ASCII (mysql style)</option>
+					<option value="separated">ASCII (separated)</option>
+					<option value="compact">ASCII (compact)</option>
+					<option value="gfm">Github Markdown</option>
+					<option value="reddit">Reddit Markdown</option>
+					<option value="rstGrid">reStructuredText Grid</option>
+					<option value="rstSimple">reStructuredText Simple</option>
+					<option value="jira">Jira</option>
+					<option value="rounded">ASCII (rounded)</option>
+					<option value="bubbles">ASCII (bubbles)</option>
+					<option value="girder">ASCII (girder)</option>
+					<option value="dots">ASCII (dots)</option>
+					<option value="unicode">Unicode</option>
+					<option value="unicode_single_line">Unicode (single line)</option>
 				</select>
 			</label>
           </div>
           <div class="row">
-            <label for="style" class="control-label" title="Select the output format of the table">Output Style:
-				<select id="style" onchange="createTable()">
+            <label for="outputStyle" class="control-label" title="Select the output format of the table">Output Style:
+				<select id="outputStyle" onchange="createTable()">
 					<option value="mysql">ASCII (mysql style)</option>
 					<option value="separated">ASCII (separated)</option>
 					<option value="compact">ASCII (compact)</option>
@@ -92,7 +105,7 @@ This is a row with only one cell</textarea>
 				</select>
 			</label>
           </div>
-          <div class="row" style="width:200%;">
+          <div class="row">
             <label for="commenting" class="control-label" title="Select a comment style to place to the left of the table">Comment Style:
 				<select id="commenting" onchange="createTable()">
 					<option value="none">"" (no comment style applied)</option>
@@ -113,6 +126,15 @@ This is a row with only one cell</textarea>
           </div>
         </div>
         <div class="col-xs-5">
+          <div class="row">
+            <label for="hdr-style" class="control-label" title="Select what should be used as a header">Header Location:
+				<select id="hdr-style" onchange="createTable()" onselect="createTable()">
+					<option value="none">None</option>
+					<option value="top" selected="true">First Row</option>
+					<option value="ssheet">Spreadsheet</option>
+				</select>
+			</label>
+          </div>
           <div class="row">
             <label for="auto-format" class="control-label" title="Center the headers and right-align numbers in the output table">Auto-Format: 
             <input id="auto-format" checked="true" type="checkbox" title="Center the headers and right-align numbers in the output table" onchange="createTable()"></label>
