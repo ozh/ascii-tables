@@ -49,6 +49,53 @@ Press **Create Table** to get something like:
   This is a row with only one cell                                                      
 ```
 
+### ASCII table (Github Markdown style)
+```
+|               Col1               |  Col2   |          Col3          | Numeric Column |
+|----------------------------------|---------|------------------------|----------------|
+| Value 1                          | Value 2 | 123                    |           10.0 |
+| Separate                         | cols    | with a tab or 4 spaces |       -2,027.1 |
+| This is a row with only one cell |         |                        |                |
+```
+
+### ASCII table (Reddit Markdown style)
+```
+               Col1               |  Col2   |          Col3          | Numeric Column 
+----------------------------------|---------|------------------------|----------------
+ Value 1                          | Value 2 | 123                    |           10.0 
+ Separate                         | cols    | with a tab or 4 spaces |       -2,027.1 
+ This is a row with only one cell |         |                        |                
+```
+
+### ASCII table ([reStructuredText](http://docutils.sourceforge.net/docs/ref/rst/restructuredtext.html#tables) Grid style)
+```
++----------------------------------+---------+------------------------+----------------+
+|               Col1               |  Col2   |          Col3          | Numeric Column |
++==================================+=========+========================+================+
+| Value 1                          | Value 2 | 123                    |           10.0 |
+| Separate                         | cols    | with a tab or 4 spaces |       -2,027.1 |
+| This is a row with only one cell |         |                        |                |
++----------------------------------+---------+------------------------+----------------+
+```
+
+### ASCII table ([reStructuredText](http://docutils.sourceforge.net/docs/ref/rst/restructuredtext.html#tables) Simple style)
+```
+ ================================== ========= ======================== ================ 
+                Col1                  Col2              Col3            Numeric Column  
+ ================================== ========= ======================== ================ 
+  Value 1                            Value 2   123                                10.0  
+  Separate                           cols      with a tab or 4 spaces         -2,027.1  
+  This is a row with only one cell                                                      
+ ================================== ========= ======================== ================ 
+```
+
+### ASCII table (Jira style)
+```
+|| Col1                             || Col2    || Col3                   || Numeric Column ||
+|  Value 1                          |  Value 2 |  123                    |  10.0           | 
+|  Separate                         |  cols    |  with a tab or 4 spaces |  -2,027.1       | 
+|  This is a row with only one cell |          |                         |                 | 
+```
 
 ### ASCII table (rounded style)
 ```
@@ -138,20 +185,27 @@ Press **Create Table** to get something like:
 | This is a row with only one cell |         |                        |                |
 ```
 
-### reStructuredText table
-```
- ================================== ========= ======================== ================ 
-                Col1                  Col2              Col3            Numeric Column  
- ================================== ========= ======================== ================ 
-  Value 1                            Value 2   123                                10.0  
-  Separate                           cols      with a tab or 4 spaces         -2,027.1  
-  This is a row with only one cell                                                      
- ================================== ========= ======================== ================ 
-```
 ### Wikimedia markup
 
 ### Or even a boring html &lt;table>
 
+Leading characters can be added by selecting a comment style:
+
+|    Style    |            Characters            |              Usage              |
+|-------------|----------------------------------|---------------------------------|
+| none        | ""                               | no comment style applied        |
+| doubleslant | "// "                            | C++/C#/F#/Java/JavaScript/Swift |
+| hash        | "# "                             | Perl/PowerShell/Python/R/Ruby   |
+| doubledash  | "-- "                            | ada/AppleScript/Haskell/Lua/SQL |
+| percent     | "% "                             | MATLAB                          |
+| singlespace | " " (1 space)                    | wikimedia                       |
+| quadspace   | " &nbsp;&nbsp;&nbsp;" (4 spaces) | reddit                          |
+| singlequote | "' " (single quote)              | VBA                             |
+| rem         | "REM "                           | BASIC/DOS batch file            |
+| c           | "C "                             | Fortran IV                      |
+| exclamation | "! "                             | Fortran 90                      |
+| slantsplat  | "/* ... */ "                     | CSS                             |
+| xml         | "&lt;!-- ... --&gt;"             | XML                             |
 
 
 
