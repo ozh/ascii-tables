@@ -32,12 +32,13 @@ function createTable() {
     var hasHeaders = headerStyle == "top";
     var spreadSheetStyle = headerStyle == "ssheet";
     var input = $('#input').val();
-	var separator = $('#separator').val();
-	
-	if (separator == "") {
-		//Default separator is the tab
-		separator = "\t";
-	} 
+    var separator = $('#separator').val();
+    var commenting = $('#commenting').val();
+    
+    if (separator == "") {
+        //Default separator is the tab
+        separator = "\t";
+    } 
 
     var rows = input.split(/[\r\n]+/);
     if (rows[rows.length - 1] == "") {
@@ -57,12 +58,12 @@ function createTable() {
     var colLengths = [];
     var isNumberCol = [];
     for (var i = 0; i < rows.length; i++) {
-		if (separator == "\t") {
-			rows[i] = rows[i].replace(/(    )/g, "\t");
-		} else {
-			//Tab is not the separator, replace tabs with single characters to keep correct spacing
-			rows[i] = rows[i].replace(/\t/g, "    ");
-		}
+        if (separator == "\t") {
+            rows[i] = rows[i].replace(/(    )/g, "\t");
+        } else {
+            //Tab is not the separator, replace tabs with single characters to keep correct spacing
+            rows[i] = rows[i].replace(/\t/g, "    ");
+        }
         var cols = rows[i].split(separator);
         for (var j = 0; j < cols.length; j++) {
             var data = cols[j];
@@ -99,12 +100,85 @@ function createTable() {
     }
 
     var style = $('#style').val();
-	var hasHeaderSeparators = true; // Defaults to including a separator line btwn header and data rows
-	var hasLineSeparators = false; // Defaults to no separator lines btwn data rows
-	var hasTopLine = true; // Defaults to including the topmost line
-	var hasBottomLine = true; // Defaults to including the bottom-most line
-	var hasRightSide = true; // Defaults to including the right side line
-	var align; // Default alignment: left-aligned
+    var hasHeaderSeparators = true; // Defaults to including a separator line btwn header and data rows
+    var hasLineSeparators = false; // Defaults to no separator lines btwn data rows
+    var hasTopLine = true; // Defaults to including the topmost line
+    var hasBottomLine = true; // Defaults to including the bottom-most line
+    var hasLeftSide = true; // Defaults to including the left side line
+    var hasRightSide = true; // Defaults to including the right side line
+    var topLineUsesBodySeparators = false; // Defaults to top line uses the same separators as the line between header and body
+    var align; // Default alignment: left-aligned
+        
+    // Add comment/remark indicators for use in code":
+    prefix = "";
+    suffix = "";
+    switch (commenting) {
+    case "none":
+        break;
+    case "doubleslant":
+        // C++/C#/F#/Java/JavaScript/Swift
+        prefix = "// ";
+        break;
+    case "hash":
+        // Perl/PowerShell/Python/R/Ruby
+        prefix = "# ";
+        break;
+    case "doubledash":
+        // ada/AppleScript/Haskell/Lua/SQL
+        prefix = "-- ";
+        break;
+    case "percent":
+        // MATLAB
+        prefix = "% ";
+        break;
+    case "singlespace":
+        // wikimedia
+        prefix = " ";
+        break;
+    case "quadspace":
+        // reddit
+        prefix = "    ";
+        break;
+    case "singlequote":
+        // VBA
+        prefix = "' ";
+        break;
+    case "rem":
+        // BASIC/DOS batch file
+        prefix = "REM ";
+        break;
+    case "c":
+        // Fortran IV
+        prefix = "C ";
+        break;
+    case "exclamation":
+        // Fortran 90 
+        prefix = "! ";
+        break;
+    case "slantsplat":
+        // CSS 
+        prefix = "/* ";
+        suffix = " */";
+        break;
+    case "xml":
+        // XML 
+        prefix = "<!-- ";
+        suffix = " -->";
+        break;
+    default:
+        break;
+    }
+    
+    // Map of variable locations in the output:
+    // 
+    // [cTL]   [hdH]  [cTM]   [hdH]  [cTR]
+    // [hdV] Header 1 [hdV] Header 2 [hdV]
+    // [cML]   [hdH]  [cMM]   [hdH]  [cMR]
+    // [spV] Value 1  [spV] Value 2  [spV]
+    // [cML]   [spH]  [cMM]   [spH]  [cMR]
+    // [spV] Value 1a [spV] Value 2a [spV]
+    // [cBL]   [spH]  [cBM]   [spH]  [cBR]
+    
     switch (style) {
     case "mysql":
         // ascii mysql style
@@ -117,7 +191,7 @@ function createTable() {
         break;
     case "separated":
         // ascii 2
-		hasLineSeparators = true;
+        hasLineSeparators = true;
         cTL = "+"; cTM = "+"; cTR = "+";
         cML = "+"; cMM = "+"; cMR = "+";
         cBL = "+"; cBM = "+"; cBR = "+";
@@ -125,17 +199,17 @@ function createTable() {
         hdV = "|"; hdH = "="; 
         spV = "|"; spH = "-"; 
         break;
-	case "compact":
+    case "compact":
         // ascii - compact
-		hasTopLine = false;
-		hasBottomLine = false;
+        hasTopLine = false;
+        hasBottomLine = false;
         cML = " "; cMM = " "; cMR = " ";
         hdV = " "; hdH = "-"; 
         spV = " "; spH = "-"; 
         break;
     case "rounded":
         // ascii rounded style
-		hasLineSeparators = true;
+        hasLineSeparators = true;
         cTL = "."; cTM = "."; cTR = ".";
         cML = ":"; cMM = "+"; cMR = ":";
         cBL = "'"; cBM = "'"; cBR = "'";
@@ -169,18 +243,54 @@ function createTable() {
         sL  = ":"; sM  = "."; sR  = ":";
 
         hdV = ":"; hdH = "."; 
-		spV = ":"; spH = "."; 
+        spV = ":"; spH = "."; 
         break;
     case "gfm":
         // github markdown
-		hasTopLine = false;
-		hasBottomLine = false;
+        hasTopLine = false;
+        hasBottomLine = false;
         cTL = "|"; cTM = "|"; cTR = "|";
         cML = "|"; cMM = "|"; cMR = "|";
         cBL = "|"; cBM = "|"; cBR = "|";
 
         hdV = "|"; hdH = "-"; 
         spV = "|"; spH = "-"; 
+        break;
+    case "reddit":
+        // reddit markdown
+        hasTopLine = false;
+        hasBottomLine = false;
+        hasLeftSide = false;
+        hasRightSide = false;
+        cTL = " "; cTM = "|"; cTR = " ";
+        cML = " "; cMM = "|"; cMR = " ";
+        cBL = " "; cBM = "|"; cBR = " ";
+
+        hdV = "|"; hdH = "-"; 
+        spV = "|"; spH = "-"; 
+        break;
+    case "rstGrid":
+        // reStructuredText Grid markup
+        hasTopLine = true;
+        topLineUsesBodySeparators = true;
+        hasBottomLine = true;
+        cTL = "+"; cTM = "+"; cTR = "+";
+        cML = "+"; cMM = "+"; cMR = "+";
+        cBL = "+"; cBM = "+"; cBR = "+";
+
+        hdV = "|"; hdH = "="; 
+        spV = "|"; spH = "-"; 
+        break;
+    case "rstSimple":
+        // reStructuredText Simple markup
+        hasTopLine = true;
+        hasBottomLine = true;
+        cTL = " "; cTM = " "; cTR = " ";
+        cML = " "; cMM = " "; cMR = " ";
+        cBL = " "; cBM = " "; cBR = " ";
+
+        hdV = " "; hdH = "="; 
+        spV = " "; spH = "="; 
         break;
     case "jira":
         // jira markdown
@@ -194,29 +304,24 @@ function createTable() {
         cBL = ""; cBM = ""; cBR = "";
 
         hdV = "||"; hdH = ""; 
-        spV = "|"; spH = ""; 
+        spV = "| "; spH = ""; 
         break;
     case "wikim":
         // wikimedia
-		hasLineSeparators = true;
-		hasRightSide = false;
-		autoFormat = false;
-		align = "l";
+        hasLineSeparators = true;
+        hasRightSide = false;
+        autoFormat = false;
+        align = "l";
         cTL = '{| class="wikitable"'; cTM = ""; cTR = "";
         cML = "|-"; cMM = ""; cMR = "";
         cBL = ""; cBM = ""; cBR = "|}";
 
         hdV = "\n!"; hdH = ""; 
         spV = "\n|"; spH = ""; 
-        break;
-    case "restructured":
-        // restructured table
-        cTL = " "; cTM = " "; cTR = " ";
-        cML = " "; cMM = " "; cMR = " ";
-        cBL = " "; cBM = " "; cBR = " ";
-
-        hdV = " "; hdH = "="; 
-        spV = " "; spH = "="; 
+        
+        // also remove prefix/suffix:
+        prefix = "";
+        suffix = "";
         break;
     case "unicode":
         // unicode
@@ -245,106 +350,91 @@ function createTable() {
 
     // output the text
     var output = "";
-	
-	// output the top most row
-	// Ex: +---+---+
-	if (hasTopLine ) {
-		for (var j = 0; j <= colLengths.length; j++) {
-			if ( !hasHeaders ) {
-				hdH = spH;
-			}
-			if ( j == 0 ) {
-				output += cTL + _repeat(hdH, colLengths[j] + 2);
-			} else if ( j < colLengths.length ) {
-				output += cTM + _repeat(hdH, colLengths[j] + 2);
-			} else if (hasRightSide) {
-				output += cTR + "\n";
-			} else {
-				output += "\n";
-			}
-		}
-	}
+    
+    // output the top most row
+    // Ex: +---+---+
+    if (hasTopLine ) {
+        if (topLineUsesBodySeparators || !hasHeaders) {
+            topLineHorizontal = spH;
+        } else {
+            topLineHorizontal = hdH;
+        } 
+        output += getSeparatorRow(colLengths, cTL, cTM, cTR, topLineHorizontal, prefix, suffix)
+    }
 
     for (var i = 0; i < rows.length; i++) {
-		// Separator Rows
-		if (hasHeaders && hasHeaderSeparators && i == 1 ) { 
-			// output the header separator row
-			for (var j = 0; j <= colLengths.length; j++) {
-				if ( j == 0) {
-					output += cML + _repeat(hdH, colLengths[j] + 2);
-				} else if (j < colLengths.length) {
-					output += cMM + _repeat(hdH, colLengths[j] + 2);
-				} else if (hasRightSide) {
-					output += cMR + "\n";
-				} else {
-					output += "\n";
-				}
-			}
-		} else if ( hasLineSeparators && i < rows.length ) { 
-			// output line separators
-			if( ( !hasHeaders && i >= 1 ) || ( hasHeaders && i > 1 ) ) {
-				for (var j = 0; j <= colLengths.length; j++) {
-					if ( j == 0 ) {
-						output += cML + _repeat(spH, colLengths[j] + 2);
-					} else if ( j < colLengths.length ) {
-						output += cMM + _repeat(spH, colLengths[j] + 2);
-					} else if (hasRightSide) {
-						output += cMR + "\n";
-					} else {
-						output += "\n";
-					}
-				}
-			}
-		}
+        // Separator Rows
+        if (hasHeaders && hasHeaderSeparators && i == 1 ) { 
+            // output the header separator row
+            output += getSeparatorRow(colLengths, cML, cMM, cMR, hdH, prefix, suffix)
+        } else if ( hasLineSeparators && i < rows.length ) { 
+            // output line separators
+            if( ( !hasHeaders && i >= 1 ) || ( hasHeaders && i > 1 ) ) {
+                output += getSeparatorRow(colLengths, cML, cMM, cMR, spH, prefix, suffix)
+            }
+        }
 
-		for (var j = 0; j <= colLengths.length; j++) {
-			// output the data
-			var cols = rows[i].split(separator);
-			var data = cols[j] || "";
-			if (autoFormat) {
-				if (hasHeaders && i == 0) {
-					align = "c";
-				} else if (isNumberCol[j]) {
-					align = "r";
-				} else {
-					align = "l";
-				}
-			}
-			if (hasHeaders && i == 0 ) { 
-				verticalBar = hdV;
-			} else {
-				verticalBar = spV;
-			}
-			if ( j < colLengths.length ) {
-				data = _pad(data, colLengths[j], " ", align);
-				output += verticalBar + " " + data + " ";
-			} else if (hasRightSide) {
-				output += verticalBar + "\n";
-			} else {
-				output += "\n";
-			}
+        for (var j = 0; j <= colLengths.length; j++) {
+            // output the data
+            if (j == 0) {
+                output += prefix;
+            }
+            var cols = rows[i].split(separator);
+            var data = cols[j] || "";
+            if (autoFormat) {
+                if (hasHeaders && i == 0) {
+                    align = "c";
+                } else if (isNumberCol[j]) {
+                    align = "r";
+                } else {
+                    align = "l";
+                }
+            }
+            if (hasHeaders && i == 0 ) { 
+                verticalBar = hdV;
+            } else {
+                verticalBar = spV;
+            }
+            if ( j < colLengths.length ) {
+                data = _pad(data, colLengths[j], " ", align);
+                if (j == 0 && !hasLeftSide) {
+                    output += "  " + data + " ";
+                } else {
+                    output += verticalBar + " " + data + " ";
+                }
+            } else if (hasRightSide) {
+                output += verticalBar + suffix + "\n";
+            } else {
+                output += suffix + "\n";
+            }
 
-		}
-	}
-	
-	// output the bottom line
-	// Ex: +---+---+
-	if (hasBottomLine ) {
-		for (var j = 0; j <= colLengths.length; j++) {
-			if ( j == 0 ) {
-				output += cBL + _repeat(spH, colLengths[j] + 2);
-			} else if ( j < colLengths.length ) {
-				output += cBM + _repeat(spH, colLengths[j] + 2);
-			} else {
-				output += cBR + "\n";
-			}
-		}
-	}
+        }
+    }
+    
+    // output the bottom line
+    // Ex: +---+---+
+    if (hasBottomLine ) {
+        output += getSeparatorRow(colLengths, cBL, cBM, cBR, spH, prefix, suffix)
+    }
 
     $('#output').val(output);
     $('#outputText').show();
     $('#outputTbl').hide();
 }
+
+function getSeparatorRow(lengths, left, middle, right, horizontal, prefix, suffix) {
+    rowOutput = prefix;
+    for (var j = 0; j <= lengths.length; j++) {
+        if ( j == 0 ) {
+            rowOutput += left + _repeat(horizontal, lengths[j] + 2);
+        } else if ( j < lengths.length ) {
+            rowOutput += middle + _repeat(horizontal, lengths[j] + 2);
+        } else {
+            rowOutput += right + suffix + "\n";
+        }
+    }
+    return rowOutput;
+};
 
 function outputAsNormalTable(rows, hasHeaders, colLengths, separator) {
     var output = "";
@@ -374,55 +464,55 @@ function parseTableClick() {
 }
 
 function parseTable(table) {
-	var separator = $('#separator').val();
-	
-	if (separator == "") {
-		//Default separator is the tab
-		separator = "\t";
-	} 
-	
+    var separator = $('#separator').val();
+    
+    if (separator == "") {
+        //Default separator is the tab
+        separator = "\t";
+    } 
+    
     var lines = table.split('\n');
-	
-	// discard separator lines
-	for (var i = 0; i < lines.length; i++) {
-		var line = lines[i];
+    
+    // discard separator lines
+    for (var i = 0; i < lines.length; i++) {
+        var line = lines[i];
         if (isSeparatorLine(line)) {
             lines.splice(i, 1); // only keep non-separator lines
-			i -= 1; // array size changed, decrement index to match
+            i -= 1; // array size changed, decrement index to match
         }
-	}
-	
-	// http://stackoverflow.com/questions/6521245/finding-longest-string-in-array
-	var copy_lines = lines.slice(0);
-	var longest = copy_lines.sort(function (a, b) { return b.length - a.length; })[0];
-	
-	// Identify column separators
+    }
+    
+    // http://stackoverflow.com/questions/6521245/finding-longest-string-in-array
+    var copy_lines = lines.slice(0);
+    var longest = copy_lines.sort(function (a, b) { return b.length - a.length; })[0];
+    
+    // Identify column separators
     var colIndexes = [];
     for (var j = 0; j < longest.length; j++) {
-		if (isColumnSeparator(lines.slice(), j)) {
-			colIndexes.push(j);
-		}
-	}
-	
-	if (colIndexes.length < 2) {
-		alert("No results parsed. Whitespace is not yet parsable as a column separator.");
-		return lines.join('\n');
-	} else if (colIndexes.length >= longest.length) {
-		alert("No results parsed. Single lines are not yet parsable.");
-		return lines.join('\n');
-	}
-	
-	alert("Parsed rows: " + lines.length + ", length: " + longest.length + ", column locations: " + colIndexes);
+        if (isColumnSeparator(lines.slice(), j)) {
+            colIndexes.push(j);
+        }
+    }
+    
+    if (colIndexes.length < 2) {
+        alert("No results parsed. Whitespace is not yet parsable as a column separator.");
+        return lines.join('\n');
+    } else if (colIndexes.length >= longest.length) {
+        alert("No results parsed. Single lines are not yet parsable.");
+        return lines.join('\n');
+    }
+    
+    alert("Parsed rows: " + lines.length + ", length: " + longest.length + ", column locations: " + colIndexes);
     
     // Loop over all items and extract the data
     var result = "";
     for (var i = 0; i < lines.length; i++) {
         var line = lines[i];
         for (var j = 0; j < colIndexes.length - 1; j++) {
-			if (colIndexes[j+1] == colIndexes[j] + 1) {
-				// adjecent columns, skip this column
-				continue;
-			}
+            if (colIndexes[j+1] == colIndexes[j] + 1) {
+                // adjecent columns, skip this column
+                continue;
+            }
             var fromCol = colIndexes[j] + 1;
             var toCol = colIndexes[j+1];
             var data = line.slice(fromCol, toCol);
@@ -441,25 +531,25 @@ function parseTable(table) {
 }
 
 function isColumnSeparator(lines, column) {
-	// Return true if this column is the same character all the way to the last row
-	if (lines.length < 2) {
-		// Last line in array, must be a valid separator
-		return true;
-	} else {
-		var thisLine = lines[0];
-		var nextLine = lines[1];
-		if (column >= thisLine.length) {
-			// Column is out of range, must not be a separator
-			return false;
-		}
-		if (thisLine[column] == nextLine[column] && thisLine[column] != " ") {
-			// Rows match, check next row down
-			return isColumnSeparator(lines.splice(0,1), column);
-		} else {
-			// Rows are different, this is not a separator
-			return false;
-		}
-	}
+    // Return true if this column is the same character all the way to the last row
+    if (lines.length < 2) {
+        // Last line in array, must be a valid separator
+        return true;
+    } else {
+        var thisLine = lines[0];
+        var nextLine = lines[1];
+        if (column >= thisLine.length) {
+            // Column is out of range, must not be a separator
+            return false;
+        }
+        if (thisLine[column] == nextLine[column] && thisLine[column] != " ") {
+            // Rows match, check next row down
+            return isColumnSeparator(lines.splice(0,1), column);
+        } else {
+            // Rows are different, this is not a separator
+            return false;
+        }
+    }
 }
 
 function isSeparatorLine(line) {

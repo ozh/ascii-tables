@@ -77,6 +77,9 @@ This is a row with only one cell</textarea>
 					<option value="separated">ASCII (separated)</option>
 					<option value="compact">ASCII (compact)</option>
 					<option value="gfm">Github Markdown</option>
+					<option value="reddit">Reddit Markdown</option>
+					<option value="rstGrid">reStructuredText Grid</option>
+					<option value="rstSimple">reStructuredText Simple</option>
 					<option value="jira">Jira</option>
 					<option value="rounded">ASCII (rounded)</option>
 					<option value="bubbles">ASCII (bubbles)</option>
@@ -84,9 +87,27 @@ This is a row with only one cell</textarea>
 					<option value="dots">ASCII (dots)</option>
 					<option value="unicode">Unicode</option>
 					<option value="unicode_single_line">Unicode (single line)</option>
-					<option value="restructured">reStructuredText</option>
 					<option value="wikim">Wikimedia</option>
 					<option value="html">HTML</option>
+				</select>
+			</label>
+          </div>
+          <div class="row" style="width:200%;">
+            <label for="commenting" class="control-label" title="Select a comment style to place to the left of the table">Comment Style:
+				<select id="commenting" onchange="createTable()">
+					<option value="none">"" (no comment style applied)</option>
+					<option value="doubleslant">"// " C++/C#/F#/Java/JavaScript/Swift</option>
+					<option value="hash">"# " Perl/PowerShell/Python/R/Ruby</option>
+					<option value="doubledash">"-- " ada/AppleScript/Haskell/Lua/SQL</option>
+					<option value="percent">"% " MATLAB </option>
+					<option value="singlespace">" " (1 space) wikimedia</option>
+					<option value="quadspace">" &nbsp;&nbsp;&nbsp;" (4 spaces) reddit</option>
+					<option value="singlequote">"' " (single quote) VBA</option>
+					<option value="rem">"REM " BASIC/DOS batch file</option>
+					<option value="c">"C " Fortran IV </option>
+					<option value="exclamation">"! " Fortran 90</option>
+					<option value="slantsplat">"/* ... */ " CSS </option>
+					<option value="xml">"&lt;!-- ... --&gt;" XML</option>
 				</select>
 			</label>
           </div>
