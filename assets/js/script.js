@@ -110,6 +110,8 @@ function createTable() {
     var align; // Default alignment: left-aligned
         
     // Add comment/remark indicators for use in code":
+    commentbefore = "";
+    commentafter  = "";
     prefix = "";
     suffix = "";
     switch (commenting) {
@@ -126,6 +128,12 @@ function createTable() {
     case "doubledash":
         // ada/AppleScript/Haskell/Lua/SQL
         prefix = "-- ";
+        break;
+    case "docblock":
+        // PHPDoc, JSDoc, Javadoc
+        commentbefore = "/**";
+        commentafter  = " */";
+        prefix = " * ";
         break;
     case "percent":
         // MATLAB
@@ -161,7 +169,7 @@ function createTable() {
         suffix = " */";
         break;
     case "xml":
-        // XML 
+        // XML
         prefix = "<!-- ";
         suffix = " -->";
         break;
@@ -351,6 +359,9 @@ function createTable() {
     // output the text
     var output = "";
     
+    // echo comment wrapper if any
+    output += commentbefore + "\n";
+    
     // output the top most row
     // Ex: +---+---+
     if (hasTopLine ) {
@@ -416,6 +427,9 @@ function createTable() {
     if (hasBottomLine ) {
         output += getSeparatorRow(colLengths, cBL, cBM, cBR, spH, prefix, suffix)
     }
+
+    // echo comment wrapper if any
+    output += commentafter + "\n";
 
     $('#output').val(output);
     $('#outputText').show();
