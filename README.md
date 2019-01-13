@@ -110,7 +110,6 @@ Press **Create Table** to get something like:
 '----------------------------------'---------'------------------------'----------------'
 ```
 
-
 ### ASCII table (bubbles style)
 ```
  o88888888888888888888888888888888888(_)888888888(_)888888888888888888888888(_)88888888888888888o 
@@ -122,7 +121,6 @@ Press **Create Table** to get something like:
  O8oooooooooooooooooooooooooooooooooo(_)ooooooooo(_)oooooooooooooooooooooooo(_)oooooooooooooooo8O 
 ```
 
-
 ### ASCII table (girder style)
 ```
 //==================================[]=========[]========================[]================\\
@@ -133,7 +131,6 @@ Press **Create Table** to get something like:
 || This is a row with only one cell ||         ||                        ||                ||
 \\==================================[]=========[]========================[]================//
 ```
-
 
 ### ASCII table (dots style)
 ```
@@ -206,6 +203,3 @@ Leading characters can be added by selecting a comment style:
 | exclamation | "! "                             | Fortran 90                      |
 | slantsplat  | "/* ... */ "                     | CSS                             |
 | xml         | "&lt;!-- ... --&gt;"             | XML                             |
-
-
-
