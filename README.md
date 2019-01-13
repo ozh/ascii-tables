@@ -110,7 +110,6 @@ Press **Create Table** to get something like:
 '----------------------------------'---------'------------------------'----------------'
 ```
 
-
 ### ASCII table (bubbles style)
 ```
  o88888888888888888888888888888888888(_)888888888(_)888888888888888888888888(_)88888888888888888o 
@@ -122,7 +121,6 @@ Press **Create Table** to get something like:
  O8oooooooooooooooooooooooooooooooooo(_)ooooooooo(_)oooooooooooooooooooooooo(_)oooooooooooooooo8O 
 ```
 
-
 ### ASCII table (girder style)
 ```
 //==================================[]=========[]========================[]================\\
@@ -133,7 +131,6 @@ Press **Create Table** to get something like:
 || This is a row with only one cell ||         ||                        ||                ||
 \\==================================[]=========[]========================[]================//
 ```
-
 
 ### ASCII table (dots style)
 ```
@@ -185,7 +182,35 @@ Press **Create Table** to get something like:
 | This is a row with only one cell |         |                        |                |
 ```
 
-### Wikimedia markup
+### MediaWiki markup
+
+```
+{| class="wikitable"
+
+! Col1
+! Col2
+! Col3
+! Numeric Column
+|-
+
+| Value 1
+| Value 2
+| 123
+| 10.0
+|-
+
+| Separate
+| cols
+| with a tab or 4 spaces
+| -2,027.1
+|-
+
+| This is a row with only one cell
+|
+|
+|
+|}
+```
 
 ### Or even a boring html &lt;table>
 
@@ -198,7 +223,7 @@ Leading characters can be added by selecting a comment style:
 | hash        | "# "                             | Perl/PowerShell/Python/R/Ruby   |
 | doubledash  | "-- "                            | ada/AppleScript/Haskell/Lua/SQL |
 | percent     | "% "                             | MATLAB                          |
-| singlespace | " " (1 space)                    | wikimedia                       |
+| singlespace | " " (1 space)                    | MediaWiki                       |
 | quadspace   | " &nbsp;&nbsp;&nbsp;" (4 spaces) | reddit                          |
 | singlequote | "' " (single quote)              | VBA                             |
 | rem         | "REM "                           | BASIC/DOS batch file            |
@@ -206,6 +231,3 @@ Leading characters can be added by selecting a comment style:
 | exclamation | "! "                             | Fortran 90                      |
 | slantsplat  | "/* ... */ "                     | CSS                             |
 | xml         | "&lt;!-- ... --&gt;"             | XML                             |
-
-
-

@@ -34,25 +34,25 @@ function createTable() {
     var input = $('#input').val();
     var separator = $('#separator').val();
     var commenting = $('#commenting').val();
-    
+
     if (separator == "") {
         //Default separator is the tab
         separator = "\t";
-    } 
+    }
 
     var rows = input.split(/[\r\n]+/);
     if (rows[rows.length - 1] == "") {
         // extraneous last row, so delete it
         rows.pop();
     }
-    
+
     if (spreadSheetStyle) {
         hasHeaders = true;
         // add the row numbers
         for (var i = 0; i < rows.length; i++) {
             rows[i] = (i+1) + separator + rows[i];
         }
-    }    
+    }
 
     // calculate the max size of each column
     var colLengths = [];
@@ -84,8 +84,8 @@ function createTable() {
             }
         }
     }
-    
-    if (spreadSheetStyle) {    
+
+    if (spreadSheetStyle) {
         // now that we have the number of columns, add the letters
         var colCount = colLengths.length;
         var letterRow = " "; // initial column will have a space
@@ -108,7 +108,7 @@ function createTable() {
     var hasRightSide = true; // Defaults to including the right side line
     var topLineUsesBodySeparators = false; // Defaults to top line uses the same separators as the line between header and body
     var align; // Default alignment: left-aligned
-        
+
     // Add comment/remark indicators for use in code":
     commentbefore = "";
     commentafter  = "";
@@ -140,7 +140,7 @@ function createTable() {
         prefix = "% ";
         break;
     case "singlespace":
-        // wikimedia
+        // mediawiki
         prefix = " ";
         break;
     case "quadspace":
@@ -160,11 +160,11 @@ function createTable() {
         prefix = "C ";
         break;
     case "exclamation":
-        // Fortran 90 
+        // Fortran 90
         prefix = "! ";
         break;
     case "slantsplat":
-        // CSS 
+        // CSS
         prefix = "/* ";
         suffix = " */";
         break;
@@ -176,9 +176,9 @@ function createTable() {
     default:
         break;
     }
-    
+
     // Map of variable locations in the output:
-    // 
+    //
     // [cTL]   [hdH]  [cTM]   [hdH]  [cTR]
     // [hdV] Header 1 [hdV] Header 2 [hdV]
     // [cML]   [hdH]  [cMM]   [hdH]  [cMR]
@@ -186,7 +186,7 @@ function createTable() {
     // [cML]   [spH]  [cMM]   [spH]  [cMR]
     // [spV] Value 1a [spV] Value 2a [spV]
     // [cBL]   [spH]  [cBM]   [spH]  [cBR]
-    
+
     switch (style) {
     case "mysql":
         // ascii mysql style
@@ -194,8 +194,8 @@ function createTable() {
         cML = "+"; cMM = "+"; cMR = "+";
         cBL = "+"; cBM = "+"; cBR = "+";
 
-        hdV = "|"; hdH = "-"; 
-        spV = "|"; spH = "-"; 
+        hdV = "|"; hdH = "-";
+        spV = "|"; spH = "-";
         break;
     case "separated":
         // ascii 2
@@ -204,16 +204,16 @@ function createTable() {
         cML = "+"; cMM = "+"; cMR = "+";
         cBL = "+"; cBM = "+"; cBR = "+";
 
-        hdV = "|"; hdH = "="; 
-        spV = "|"; spH = "-"; 
+        hdV = "|"; hdH = "=";
+        spV = "|"; spH = "-";
         break;
     case "compact":
         // ascii - compact
         hasTopLine = false;
         hasBottomLine = false;
         cML = " "; cMM = " "; cMR = " ";
-        hdV = " "; hdH = "-"; 
-        spV = " "; spH = "-"; 
+        hdV = " "; hdH = "-";
+        spV = " "; spH = "-";
         break;
     case "rounded":
         // ascii rounded style
@@ -222,8 +222,8 @@ function createTable() {
         cML = ":"; cMM = "+"; cMR = ":";
         cBL = "'"; cBM = "'"; cBR = "'";
 
-        hdV = "|"; hdH = "-"; 
-        spV = "|"; spH = "-"; 
+        hdV = "|"; hdH = "-";
+        spV = "|"; spH = "-";
         break;
     case "girder":
         // ascii rounded style
@@ -231,8 +231,8 @@ function createTable() {
         cML = "|]"; cMM = "[]"; cMR = "[|";
         cBL = "\\\\"; cBM = "[]"; cBR = "//";
 
-        hdV = "||"; hdH = "="; 
-        spV = "||"; spH = "="; 
+        hdV = "||"; hdH = "=";
+        spV = "||"; spH = "=";
         break;
     case "bubbles":
         // ascii bubbled style
@@ -240,8 +240,8 @@ function createTable() {
         cML = "(88"; cMM = "(_)"; cMR = "88)";
         cBL = " O8"; cBM = "(_)"; cBR = "8O ";
 
-        hdV = "(_)"; hdH = "8"; 
-        spV = "(_)"; spH = "o"; 
+        hdV = "(_)"; hdH = "8";
+        spV = "(_)"; spH = "o";
         break;
     case "dots":
         // ascii dotted style
@@ -250,8 +250,8 @@ function createTable() {
         cBL = ":"; cBM = ":"; cBR = ":";
         sL  = ":"; sM  = "."; sR  = ":";
 
-        hdV = ":"; hdH = "."; 
-        spV = ":"; spH = "."; 
+        hdV = ":"; hdH = ".";
+        spV = ":"; spH = ".";
         break;
     case "gfm":
         // github markdown
@@ -261,8 +261,8 @@ function createTable() {
         cML = "|"; cMM = "|"; cMR = "|";
         cBL = "|"; cBM = "|"; cBR = "|";
 
-        hdV = "|"; hdH = "-"; 
-        spV = "|"; spH = "-"; 
+        hdV = "|"; hdH = "-";
+        spV = "|"; spH = "-";
         break;
     case "reddit":
         // reddit markdown
@@ -274,8 +274,8 @@ function createTable() {
         cML = " "; cMM = "|"; cMR = " ";
         cBL = " "; cBM = "|"; cBR = " ";
 
-        hdV = "|"; hdH = "-"; 
-        spV = "|"; spH = "-"; 
+        hdV = "|"; hdH = "-";
+        spV = "|"; spH = "-";
         break;
     case "rstGrid":
         // reStructuredText Grid markup
@@ -286,8 +286,8 @@ function createTable() {
         cML = "+"; cMM = "+"; cMR = "+";
         cBL = "+"; cBM = "+"; cBR = "+";
 
-        hdV = "|"; hdH = "="; 
-        spV = "|"; spH = "-"; 
+        hdV = "|"; hdH = "=";
+        spV = "|"; spH = "-";
         break;
     case "rstSimple":
         // reStructuredText Simple markup
@@ -297,8 +297,8 @@ function createTable() {
         cML = " "; cMM = " "; cMR = " ";
         cBL = " "; cBM = " "; cBR = " ";
 
-        hdV = " "; hdH = "="; 
-        spV = " "; spH = "="; 
+        hdV = " "; hdH = "=";
+        spV = " "; spH = "=";
         break;
     case "jira":
         // jira markdown
@@ -311,11 +311,11 @@ function createTable() {
         cML = ""; cMM = ""; cMR = "";
         cBL = ""; cBM = ""; cBR = "";
 
-        hdV = "||"; hdH = ""; 
-        spV = "| "; spH = ""; 
+        hdV = "||"; hdH = "";
+        spV = "| "; spH = "";
         break;
-    case "wikim":
-        // wikimedia
+    case "mediawiki":
+        // mediawiki
         hasLineSeparators = true;
         hasRightSide = false;
         autoFormat = false;
@@ -324,9 +324,9 @@ function createTable() {
         cML = "|-"; cMM = ""; cMR = "";
         cBL = ""; cBM = ""; cBR = "|}";
 
-        hdV = "\n!"; hdH = ""; 
-        spV = "\n|"; spH = ""; 
-        
+        hdV = "\n!"; hdH = "";
+        spV = "\n|"; spH = "";
+
         // also remove prefix/suffix:
         prefix = "";
         suffix = "";
@@ -337,8 +337,8 @@ function createTable() {
         cML = "\u2560"; cMM = "\u256C"; cMR = "\u2563";
         cBL = "\u255A"; cBM = "\u2569"; cBR = "\u255D";
 
-        hdV = "\u2551"; hdH = "\u2550"; 
-        spV = "\u2551"; spH = "\u2550"; 
+        hdV = "\u2551"; hdH = "\u2550";
+        spV = "\u2551"; spH = "\u2550";
         break;
     case "unicode_single_line":
         // unicode one line thick border
@@ -358,10 +358,10 @@ function createTable() {
 
     // output the text
     var output = "";
-    
+
     // echo comment wrapper if any
     output += commentbefore + "\n";
-    
+
     // output the top most row
     // Ex: +---+---+
     if (hasTopLine ) {
@@ -369,16 +369,16 @@ function createTable() {
             topLineHorizontal = spH;
         } else {
             topLineHorizontal = hdH;
-        } 
+        }
         output += getSeparatorRow(colLengths, cTL, cTM, cTR, topLineHorizontal, prefix, suffix)
     }
 
     for (var i = 0; i < rows.length; i++) {
         // Separator Rows
-        if (hasHeaders && hasHeaderSeparators && i == 1 ) { 
+        if (hasHeaders && hasHeaderSeparators && i == 1 ) {
             // output the header separator row
             output += getSeparatorRow(colLengths, cML, cMM, cMR, hdH, prefix, suffix)
-        } else if ( hasLineSeparators && i < rows.length ) { 
+        } else if ( hasLineSeparators && i < rows.length ) {
             // output line separators
             if( ( !hasHeaders && i >= 1 ) || ( hasHeaders && i > 1 ) ) {
                 output += getSeparatorRow(colLengths, cML, cMM, cMR, spH, prefix, suffix)
@@ -401,7 +401,7 @@ function createTable() {
                     align = "l";
                 }
             }
-            if (hasHeaders && i == 0 ) { 
+            if (hasHeaders && i == 0 ) {
                 verticalBar = hdV;
             } else {
                 verticalBar = spV;
@@ -421,7 +421,7 @@ function createTable() {
 
         }
     }
-    
+
     // output the bottom line
     // Ex: +---+---+
     if (hasBottomLine ) {
@@ -479,14 +479,14 @@ function parseTableClick() {
 
 function parseTable(table) {
     var separator = $('#separator').val();
-    
+
     if (separator == "") {
         //Default separator is the tab
         separator = "\t";
-    } 
-    
+    }
+
     var lines = table.split('\n');
-    
+
     // discard separator lines
     for (var i = 0; i < lines.length; i++) {
         var line = lines[i];
@@ -495,11 +495,11 @@ function parseTable(table) {
             i -= 1; // array size changed, decrement index to match
         }
     }
-    
+
     // http://stackoverflow.com/questions/6521245/finding-longest-string-in-array
     var copy_lines = lines.slice(0);
     var longest = copy_lines.sort(function (a, b) { return b.length - a.length; })[0];
-    
+
     // Identify column separators
     var colIndexes = [];
     for (var j = 0; j < longest.length; j++) {
@@ -507,7 +507,7 @@ function parseTable(table) {
             colIndexes.push(j);
         }
     }
-    
+
     if (colIndexes.length < 2) {
         alert("No results parsed. Whitespace is not yet parsable as a column separator.");
         return lines.join('\n');
@@ -515,9 +515,9 @@ function parseTable(table) {
         alert("No results parsed. Single lines are not yet parsable.");
         return lines.join('\n');
     }
-    
+
     alert("Parsed rows: " + lines.length + ", length: " + longest.length + ", column locations: " + colIndexes);
-    
+
     // Loop over all items and extract the data
     var result = "";
     for (var i = 0; i < lines.length; i++) {
@@ -532,11 +532,11 @@ function parseTable(table) {
             var data = line.slice(fromCol, toCol);
             data = _trim(data);
             result += data;
-            
+
             if (j < colIndexes.length - 2)
                 result += separator;
         }
-                
+
         if (i < lines.length - 1)
             result += '\n';
     }
