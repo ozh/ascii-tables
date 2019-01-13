@@ -182,7 +182,7 @@ Press **Create Table** to get something like:
 | This is a row with only one cell |         |                        |                |
 ```
 
-### Wikimedia markup
+### MediaWiki markup
 
 ```
 {| class="wikitable"
@@ -223,7 +223,7 @@ Leading characters can be added by selecting a comment style:
 | hash        | "# "                             | Perl/PowerShell/Python/R/Ruby   |
 | doubledash  | "-- "                            | ada/AppleScript/Haskell/Lua/SQL |
 | percent     | "% "                             | MATLAB                          |
-| singlespace | " " (1 space)                    | wikimedia                       |
+| singlespace | " " (1 space)                    | MediaWiki                       |
 | quadspace   | " &nbsp;&nbsp;&nbsp;" (4 spaces) | reddit                          |
 | singlequote | "' " (single quote)              | VBA                             |
 | rem         | "REM "                           | BASIC/DOS batch file            |

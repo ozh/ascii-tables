@@ -140,7 +140,7 @@ function createTable() {
         prefix = "% ";
         break;
     case "singlespace":
-        // wikimedia
+        // mediawiki
         prefix = " ";
         break;
     case "quadspace":
@@ -314,8 +314,8 @@ function createTable() {
         hdV = "||"; hdH = "";
         spV = "| "; spH = "";
         break;
-    case "wikim":
-        // wikimedia
+    case "mediawiki":
+        // mediawiki
         hasLineSeparators = true;
         hasRightSide = false;
         autoFormat = false;
