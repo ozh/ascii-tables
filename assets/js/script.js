@@ -608,3 +608,17 @@ function _pad(text, length, char, align) {
 function _repeat(str, num) {
     return new Array(num + 1).join(str);
 }
+
+function copyOutputToClipboard() {
+    const output = $('#output').val();
+    
+    if (navigator.clipboard) {
+        navigator.clipboard.writeText(output).catch(e => console.error('Cannot write to clipboard', e));
+    } else {
+        const tmp = $('<textarea>');
+        $('body').append(tmp);
+        tmp.val(output).select();
+        document.execCommand('copy');
+        tmp.remove();
+    }
+}
