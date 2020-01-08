@@ -3,7 +3,7 @@ ascii-tables
 
 Quickly format tables in ASCII. Great for code comments, or Github Markdown!
 
-Play with it: http://ozh.github.io/ascii-tables/
+Play with it: https://ozh.github.io/ascii-tables/
 
 ### Input text like this
 
