@@ -173,6 +173,10 @@ function createTable() {
         prefix = "<!-- ";
         suffix = " -->";
         break;
+    case "pipe":
+        prefix = "|";
+        suffix = "|";
+        break;
     default:
         break;
     }
