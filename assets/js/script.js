@@ -29,6 +29,7 @@ function createTable() {
 
     var headerStyle = $('#hdr-style').val();
     var autoFormat = $('#auto-format').is(':checked');
+    var trimInput = $('#trim-input').is(':checked');
     var hasHeaders = headerStyle == "top";
     var spreadSheetStyle = headerStyle == "ssheet";
     var input = $('#input').val();
@@ -58,6 +59,9 @@ function createTable() {
     var colLengths = [];
     var isNumberCol = [];
     for (var i = 0; i < rows.length; i++) {
+        if (trimInput) {
+            rows[i] = rows[i].trim();
+        }
         if (separator == "\t") {
             rows[i] = rows[i].replace(/(    )/g, "\t");
         } else {
