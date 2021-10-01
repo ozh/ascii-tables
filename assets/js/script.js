@@ -34,6 +34,7 @@ function createTable() {
     var spreadSheetStyle = headerStyle == "ssheet";
     var input = $('#input').val();
     var separator = $('#separator').val();
+    var padding_char = $('#padding').val();
     var commenting = $('#commenting').val();
 
     if (separator == "") {
@@ -415,11 +416,11 @@ function createTable() {
                 verticalBar = spV;
             }
             if ( j < colLengths.length ) {
-                data = _pad(data, colLengths[j], " ", align);
+                data = _pad(data, colLengths[j], padding_char, align);
                 if (j == 0 && !hasLeftSide) {
-                    output += "  " + data + " ";
+                    output += padding_char + padding_char + data + padding_char;
                 } else {
-                    output += verticalBar + " " + data + " ";
+                    output += verticalBar + padding_char + data + padding_char;
                 }
             } else if (hasRightSide) {
                 output += verticalBar + suffix + "\n";

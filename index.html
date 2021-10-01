@@ -55,77 +55,82 @@ This is a row with only one cell</textarea>
         </div>
       </div>
     </div>
-    <div class="row text-center">
+    <div class="row">
       <div class="well well-sm col-xs-10 col-xs-offset-1 col-sm-9 col-md-8 col-lg-offset-2 col-lg-6 col-lg-offset-3">
         <div class="col-xs-1"><h2 title="Settings" id="settings"><i class="fa fa-gear"></i></h2>
 
         </div>
-        <div class="col-xs-6">
-          <div class="row">
+        <div class="col-xs-4">
             <label for="hdr-style" class="control-label" title="Select what should be used as a header">Header Location:
-				<select id="hdr-style" onchange="createTable()" onselect="createTable()">
-					<option value="none">None</option>
-					<option value="top" selected="true">First Row</option>
-					<option value="ssheet">Spreadsheet</option>
-				</select>
-			</label>
+                <select id="hdr-style" onchange="createTable()" onselect="createTable()">
+                    <option value="none">None</option>
+                    <option value="top" selected="true">First Row</option>
+                    <option value="ssheet">Spreadsheet</option>
+                </select>
+            </label>
           </div>
-          <div class="row">
+          <div class="col-xs-4">
             <label for="style" class="control-label" title="Select the output format of the table">Output Style:
-				<select id="style" onchange="createTable()">
-					<option value="mysql">ASCII (mysql style)</option>
-					<option value="separated">ASCII (separated)</option>
-					<option value="compact">ASCII (compact)</option>
-					<option value="gfm">Github Markdown</option>
-					<option value="reddit">Reddit Markdown</option>
-					<option value="rstGrid">reStructuredText Grid</option>
-					<option value="rstSimple">reStructuredText Simple</option>
-					<option value="jira">Jira</option>
-					<option value="rounded">ASCII (rounded)</option>
-					<option value="bubbles">ASCII (bubbles)</option>
-					<option value="girder">ASCII (girder)</option>
-					<option value="dots">ASCII (dots)</option>
-					<option value="unicode">Unicode</option>
-					<option value="unicode_single_line">Unicode (single line)</option>
-					<option value="mediawiki">MediaWiki</option>
-					<option value="html">HTML</option>
-				</select>
-			</label>
+                <select id="style" onchange="createTable()">
+                    <option value="mysql">ASCII (mysql style)</option>
+                    <option value="separated">ASCII (separated)</option>
+                    <option value="compact">ASCII (compact)</option>
+                    <option value="gfm">Github Markdown</option>
+                    <option value="reddit">Reddit Markdown</option>
+                    <option value="rstGrid">reStructuredText Grid</option>
+                    <option value="rstSimple">reStructuredText Simple</option>
+                    <option value="jira">Jira</option>
+                    <option value="rounded">ASCII (rounded)</option>
+                    <option value="bubbles">ASCII (bubbles)</option>
+                    <option value="girder">ASCII (girder)</option>
+                    <option value="dots">ASCII (dots)</option>
+                    <option value="unicode">Unicode</option>
+                    <option value="unicode_single_line">Unicode (single line)</option>
+                    <option value="mediawiki">MediaWiki</option>
+                    <option value="html">HTML</option>
+                </select>
+            </label>
           </div>
-          <div class="row" style="width:200%;">
-            <label for="commenting" class="control-label" title="Select a comment style to place to the left of the table">Comment Style:
-				<select id="commenting" onchange="createTable()">
-					<option value="none">"" (no comment style applied)</option>
-					<option value="doubleslant">"// " C++/C#/F#/Java/JavaScript/Rust/Swift</option>
-					<option value="hash">"# " Perl/PowerShell/Python/R/Ruby</option>
-					<option value="doubledash">"-- " ada/AppleScript/Haskell/Lua/SQL</option>
-					<option value="percent">"% " MATLAB </option>
-					<option value="docblock">" * " Docblock (PHP/Java/JS) </option>
-					<option value="singlespace">" " (1 space) MediaWiki</option>
-					<option value="quadspace">" &nbsp;&nbsp;&nbsp;" (4 spaces) reddit</option>
-					<option value="singlequote">"' " (single quote) VBA</option>
-					<option value="rem">"REM " BASIC/DOS batch file</option>
-					<option value="c">"C " Fortran IV </option>
-					<option value="exclamation">"! " Fortran 90</option>
-					<option value="slantsplat">"/* ... */ " CSS </option>
-					<option value="xml">"&lt;!-- ... --&gt;" XML</option>
-					<option value="pipe">"|" Reddit pipe</option>
-				</select>
-			</label>
-          </div>
-        </div>
-        <div class="col-xs-5">
-          <div class="row">
+          <div class="col-xs-3">
             <label for="auto-format" class="control-label" title="Center the headers and right-align numbers in the output table">Auto-Format:
             <input id="auto-format" checked="true" type="checkbox" title="Center the headers and right-align numbers in the output table" onchange="createTable()"></label>
+        </div>
+        <div class="col-xs-4">
+            <label for="separator" class="control-label" title="Identify character for custom separator, default is the tab character">Custom Separator:
+            <input style="line-height: normal" id="separator" type="text" name="separator" maxlength="1" size="1" onfocus="this.value = '';createTable()" onkeyup="createTable()"></label>
+        </div>
+        <div class="col-xs-4">
+            <label for="padding" class="control-label" title="Padding, default is the space character">Padding char:
+                <select id="padding" onchange="createTable()">
+                    <option value=" " selected>space</option>
+                    <option value=" ">non-breaking space</option>
+                </select>
+            </label>
+        </div>
+        <div class="col-xs-3">
             <label for="trim-input" class="control-label" title="Trim the input lines before parsing">Trim Input Lines:
             <input id="trim-input" checked="true" type="checkbox" title="Trim the input lines before parsing" onchange="createTable()"></label>
-          </div>
-          <div class="row">
-            <label for="separator" class="control-label" title="Identify character for custom separator, default is the tab character">Custom Separator:
-            <input id="separator" type="text" name="separator" maxlength="1" size="1" onfocus="this.value = '';createTable()" onkeyup="createTable()"
-            /></label>
-          </div>
+        </div>
+        <div class="col-xs-offset-1 col-xs-11">
+            <label for="commenting" class="control-label" title="Select a comment style to place to the left of the table">Comment Style:
+                <select id="commenting" onchange="createTable()">
+                    <option value="none">"" (no comment style applied)</option>
+                    <option value="doubleslant">"// " C++/C#/F#/Java/JavaScript/Rust/Swift</option>
+                    <option value="hash">"# " Perl/PowerShell/Python/R/Ruby</option>
+                    <option value="doubledash">"-- " ada/AppleScript/Haskell/Lua/SQL</option>
+                    <option value="percent">"% " MATLAB </option>
+                    <option value="docblock">" * " Docblock (PHP/Java/JS) </option>
+                    <option value="singlespace">" " (1 space) MediaWiki</option>
+                    <option value="quadspace">" &nbsp;&nbsp;&nbsp;" (4 spaces) reddit</option>
+                    <option value="singlequote">"' " (single quote) VBA</option>
+                    <option value="rem">"REM " BASIC/DOS batch file</option>
+                    <option value="c">"C " Fortran IV </option>
+                    <option value="exclamation">"! " Fortran 90</option>
+                    <option value="slantsplat">"/* ... */ " CSS </option>
+                    <option value="xml">"&lt;!-- ... --&gt;" XML</option>
+                    <option value="pipe">"|" Reddit pipe</option>
+                </select>
+            </label>
         </div>
       </div>
     </div>
@@ -148,7 +153,6 @@ This is a row with only one cell</textarea>
         </div>
       </div>
     </div>
-
     <div id="outputTbl" class="row"></div>
     <div class="row">
       <footer>
