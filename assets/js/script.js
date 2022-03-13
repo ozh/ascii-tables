@@ -566,7 +566,7 @@ function isColumnSeparator(lines, column) {
         }
         if (thisLine[column] == nextLine[column] && thisLine[column] != " ") {
             // Rows match, check next row down
-            return isColumnSeparator(lines.splice(0,1), column);
+            return isColumnSeparator(lines.splice(1), column);
         } else {
             // Rows are different, this is not a separator
             return false;
