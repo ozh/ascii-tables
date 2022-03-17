@@ -560,11 +560,23 @@ function isColumnSeparator(lines, column) {
     } else {
         var thisLine = lines[0];
         var nextLine = lines[1];
+        
         if (column >= thisLine.length) {
             // Column is out of range, must not be a separator
             return false;
         }
-        if (thisLine[column] == nextLine[column] && thisLine[column] != " ") {
+        
+        var previousColumn = column-1;
+        var thisLineThisChar = thisLine[column];
+        var thisLinePreviousChar = (previousColumn > 0) ? thisLine[previousColumn] : " ";
+        var nextLineThisChar = nextLine[column];
+        var nextLinePreviousChar = (previousColumn > 0) ? nextLine[previousColumn] : " ";
+        
+        if (thisLineThisChar == nextLineThisChar 
+            && thisLineThisChar != " "
+            && thisLinePreviousChar == " "
+            && nextLinePreviousChar == " "
+           ) {
             // Rows match, check next row down
             return isColumnSeparator(lines.splice(1), column);
         } else {
