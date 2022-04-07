@@ -245,6 +245,7 @@ Leading characters can be added by selecting a comment style:
 | exclamation | "! "                             | Fortran 90                           |
 | slantsplat  | "/* ... */ "                     | CSS                                  |
 | xml         | "&lt;!-- ... --&gt;"             | XML                                  |
+| whatsapp    | "```"                            | Whatsapp monospace font              |
 
 ## License
 
