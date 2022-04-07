@@ -181,6 +181,10 @@ function createTable() {
         prefix = "|";
         suffix = "|";
         break;
+    case "whatsapp":
+        commentbefore = "```";
+        commentafter  = "```";
+        break;
     default:
         break;
     }
