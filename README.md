@@ -212,25 +212,40 @@ Press **Create Table** to get something like:
 |}
 ```
 
+### ASCII table (inside Github code block)
+
+````
+```
++----------------------------------+---------+------------------------+----------------+
+|               Col1               |  Col2   |          Col3          | Numeric Column |
++----------------------------------+---------+------------------------+----------------+
+| Value 1                          | Value 2 | 123                    |           10.0 |
+| Separate                         | cols    | with a tab or 4 spaces |       -2,027.1 |
+| This is a row with only one cell |         |                        |                |
++----------------------------------+---------+------------------------+----------------+
+``` 
+````
+
 ### Or even a boring html &lt;table>
 
 Leading characters can be added by selecting a comment style:
 
-|    Style    |            Characters            |                Usage                 |
-|-------------|----------------------------------|--------------------------------------|
-| none        | ""                               | no comment style applied             |
-| doubleslant | "// "                            | C++/C#/F#/Java/JavaScript/Rust/Swift |
-| hash        | "# "                             | Perl/PowerShell/Python/R/Ruby        |
-| doubledash  | "-- "                            | ada/AppleScript/Haskell/Lua/SQL      |
-| percent     | "% "                             | MATLAB                               |
-| singlespace | " " (1 space)                    | MediaWiki                            |
-| quadspace   | " &nbsp;&nbsp;&nbsp;" (4 spaces) | reddit                               |
-| singlequote | "' " (single quote)              | VBA                                  |
-| rem         | "REM "                           | BASIC/DOS batch file                 |
-| c           | "C "                             | Fortran IV                           |
-| exclamation | "! "                             | Fortran 90                           |
-| slantsplat  | "/* ... */ "                     | CSS                                  |
-| xml         | "&lt;!-- ... --&gt;"             | XML                                  |
+|       Style       |            Characters            |                Usage                 |
+|-------------------|----------------------------------|--------------------------------------|
+| none              | ""                               | no comment style applied             |
+| doubleslant       | "// "                            | C++/C#/F#/Java/JavaScript/Rust/Swift |
+| hash              | "# "                             | Perl/PowerShell/Python/R/Ruby        |
+| doubledash        | "-- "                            | ada/AppleScript/Haskell/Lua/SQL      |
+| percent           | "% "                             | MATLAB                               |
+| singlespace       | " " (1 space)                    | MediaWiki                            |
+| quadspace         | " &nbsp;&nbsp;&nbsp;" (4 spaces) | reddit                               |
+| singlequote       | "' " (single quote)              | VBA                                  |
+| rem               | "REM "                           | BASIC/DOS batch file                 |
+| c                 | "C "                             | Fortran IV                           |
+| exclamation       | "! "                             | Fortran 90                           |
+| slantsplat        | "/* ... */ "                     | CSS                                  |
+| xml               | "&lt;!-- ... --&gt;"             | XML                                  |
+| triplebacktick    | "```"                            | Github code block/Whatsapp table     |
 
 ## License
 

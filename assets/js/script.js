@@ -181,6 +181,10 @@ function createTable() {
         prefix = "|";
         suffix = "|";
         break;
+    case "triplebacktick":
+        commentbefore = "```";
+        commentafter  = "```";
+        break;
     default:
         break;
     }
