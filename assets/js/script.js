@@ -181,7 +181,7 @@ function createTable() {
         prefix = "|";
         suffix = "|";
         break;
-    case "whatsapp":
+    case "triplebacktick":
         commentbefore = "```";
         commentafter  = "```";
         break;

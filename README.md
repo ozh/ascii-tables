@@ -212,7 +212,7 @@ Press **Create Table** to get something like:
 |}
 ```
 
-### Whatsapp monospace font
+### ASCII table (inside Github code block)
 
 ````
 ```
@@ -230,22 +230,22 @@ Press **Create Table** to get something like:
 
 Leading characters can be added by selecting a comment style:
 
-|    Style    |            Characters            |                Usage                 |
-|-------------|----------------------------------|--------------------------------------|
-| none        | ""                               | no comment style applied             |
-| doubleslant | "// "                            | C++/C#/F#/Java/JavaScript/Rust/Swift |
-| hash        | "# "                             | Perl/PowerShell/Python/R/Ruby        |
-| doubledash  | "-- "                            | ada/AppleScript/Haskell/Lua/SQL      |
-| percent     | "% "                             | MATLAB                               |
-| singlespace | " " (1 space)                    | MediaWiki                            |
-| quadspace   | " &nbsp;&nbsp;&nbsp;" (4 spaces) | reddit                               |
-| singlequote | "' " (single quote)              | VBA                                  |
-| rem         | "REM "                           | BASIC/DOS batch file                 |
-| c           | "C "                             | Fortran IV                           |
-| exclamation | "! "                             | Fortran 90                           |
-| slantsplat  | "/* ... */ "                     | CSS                                  |
-| xml         | "&lt;!-- ... --&gt;"             | XML                                  |
-| whatsapp    | "```"                            | Whatsapp monospace font              |
+|       Style       |            Characters            |                Usage                 |
+|-------------------|----------------------------------|--------------------------------------|
+| none              | ""                               | no comment style applied             |
+| doubleslant       | "// "                            | C++/C#/F#/Java/JavaScript/Rust/Swift |
+| hash              | "# "                             | Perl/PowerShell/Python/R/Ruby        |
+| doubledash        | "-- "                            | ada/AppleScript/Haskell/Lua/SQL      |
+| percent           | "% "                             | MATLAB                               |
+| singlespace       | " " (1 space)                    | MediaWiki                            |
+| quadspace         | " &nbsp;&nbsp;&nbsp;" (4 spaces) | reddit                               |
+| singlequote       | "' " (single quote)              | VBA                                  |
+| rem               | "REM "                           | BASIC/DOS batch file                 |
+| c                 | "C "                             | Fortran IV                           |
+| exclamation       | "! "                             | Fortran 90                           |
+| slantsplat        | "/* ... */ "                     | CSS                                  |
+| xml               | "&lt;!-- ... --&gt;"             | XML                                  |
+| triplebacktick    | "```"                            | Github code block/Whatsapp table     |
 
 ## License
 
