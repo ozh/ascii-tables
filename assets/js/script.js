@@ -18,7 +18,8 @@ $(function() {
         }
     });
     
-    elMeasure = document.createElement('div');
+    elMeasure = document.createElement('pre');
+    document.body.appendChild(elMeasure);
     $(elMeasure).css({
         position: 'absolute',
         top: '-200px',
@@ -26,18 +27,19 @@ $(function() {
         height: 'auto',
         display: 'inline-block',
         font: $('#input').css('font'),
+        padding: 0
     });
     
-    document.body.appendChild(elMeasure);
-    elMeasure.innerText = ".";
-    wDot = elMeasure.clientWidth;
+    elMeasure.innerText = "x";
+    wSingle = elMeasure.clientWidth;
 });
 
 
-var elMeasure, wDot;
+var elMeasure, wSingle, _cache = {};
 function getUnicodeAwareLength(str) {
-    elMeasure.innerText = str;
-    return Math.round(elMeasure.clientWidth / wDot);
+    if (_cache[str] )return _cache[str]
+     elMeasure.innerText = str;
+    return _cache[str] = Math.round(elMeasure.clientWidth / wSingle);
 }
 
 // var regMultibyte = /[\uD800-\uDBFF][\uD800-\uDFFF]{,13}|[ㄱ-ㅎㅏ-ㅣ가-힣]|(?:[\x23-\x39\uFE0F\u20E3]{3})/g;
@@ -84,6 +86,7 @@ function createTable() {
     // calculate the max size of each column
     var colLengths = [];
     var isNumberCol = [];
+    _cache = {};
     for (var i = 0; i < rows.length; i++) {
         if (trimInput) {
             rows[i] = rows[i].trim();
@@ -96,7 +99,7 @@ function createTable() {
         }
         var cols = rows[i].split(separator);
         for (var j = 0; j < cols.length; j++) {
-            var data = cols[j];
+            var data = cols[j].trim();
             var isNewCol = colLengths[j] == undefined;
             if (isNewCol) {
                 isNumberCol[j] = true;
@@ -109,7 +112,7 @@ function createTable() {
                     isNumberCol[j] = false;
                 }
             }
-            if (isNewCol || colLengths[j] < data.length) {                
+            if (isNewCol || colLengths[j] < getUnicodeAwareLength(data)) {                
                 colLengths[j] = getUnicodeAwareLength(data);
             }
         }
@@ -426,7 +429,7 @@ function createTable() {
                 output += prefix;
             }
             var cols = rows[i].split(separator);
-            var data = cols[j] || "";
+            var data = (cols[j] || "").trim();
             if (autoFormat) {
                 if (hasHeaders && i == 0) {
                     align = "c";
