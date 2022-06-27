@@ -27,11 +27,14 @@ $(function() {
         height: 'auto',
         display: 'inline-block',
         font: $('#input').css('font'),
-        padding: 0
+        letterSpacing: 0,
+        padding: 0,
+        border: 0,
+        fontVariantLigatures: 'none'
     });
     
-    elMeasure.innerText = "x";
-    wSingle = elMeasure.clientWidth;
+    elMeasure.innerText = Array(11).join('x');
+    wSingle = elMeasure.clientWidth / 10;
 });
 
 
