@@ -17,7 +17,23 @@ $(function() {
             e.preventDefault();
         }
     });
+
+    _canvas = document.createElement('canvas');
 });
+
+var _canvas, _context, _cache = {}; // measuring cache
+function measureWidth(str) {
+    if (typeof _cache[str] === 'number') return _cache[str];
+    _context = _canvas.getContext('2d');
+    _context.font = $('#input').css('font');
+    return _cache[str] = _context.measureText(str).width;
+}
+function getUnicodeAwareLength(text) {
+    var w = measureWidth(text);
+    var wSingle = measureWidth("-");
+    return w / wSingle;
+}
+
 
 function createTable() {
     // set up the style
@@ -58,6 +74,7 @@ function createTable() {
     // calculate the max size of each column
     var colLengths = [];
     var isNumberCol = [];
+    _cache = {};
     for (var i = 0; i < rows.length; i++) {
         if (trimInput) {
             rows[i] = rows[i].trim();
@@ -70,7 +87,7 @@ function createTable() {
         }
         var cols = rows[i].split(separator);
         for (var j = 0; j < cols.length; j++) {
-            var data = cols[j];
+            var data = cols[j].trim();
             var isNewCol = colLengths[j] == undefined;
             if (isNewCol) {
                 isNumberCol[j] = true;
@@ -79,12 +96,13 @@ function createTable() {
             if (autoFormat) {
                 if (hasHeaders && i == 0 && !spreadSheetStyle) {
                     ; // a header is allowed to not be a number (exclude spreadsheet because the header hasn't been added yet
-                } else if (isNumberCol[j] && !data.match(/^(\s*-?(\d|,| |[.])*\s*)$/)) { //number can be negative, comma/period-separated, or decimal
+                } else if (isNumberCol[j] && !data || !data.match(/^(\s*-?(\d|,| |[.])*\s*)$/)) { //number can be negative, comma/period-separated, or decimal, allow empty cell
                     isNumberCol[j] = false;
                 }
             }
-            if (isNewCol || colLengths[j] < data.length) {
-               colLengths[j] = data.length;
+            var colLength = Math.round(getUnicodeAwareLength(data));
+            if (isNewCol || colLengths[j] < colLength) {
+                colLengths[j] = colLength;
             }
         }
     }
@@ -372,7 +390,7 @@ function createTable() {
 
     // output the top most row
     // Ex: +---+---+
-    if (hasTopLine ) {
+    if (hasTopLine) {
         if (topLineUsesBodySeparators || !hasHeaders) {
             topLineHorizontal = spH;
         } else {
@@ -381,25 +399,26 @@ function createTable() {
         output += getSeparatorRow(colLengths, cTL, cTM, cTR, topLineHorizontal, prefix, suffix)
     }
 
+    var separatorAlign = (style === "gfm" && autoFormat) ? isNumberCol : []
     for (var i = 0; i < rows.length; i++) {
         // Separator Rows
         if (hasHeaders && hasHeaderSeparators && i == 1 ) {
             // output the header separator row
-            output += getSeparatorRow(colLengths, cML, cMM, cMR, hdH, prefix, suffix)
+            output += getSeparatorRow(colLengths, cML, cMM, cMR, hdH, prefix, suffix, separatorAlign)
         } else if ( hasLineSeparators && i < rows.length ) {
             // output line separators
             if( ( !hasHeaders && i >= 1 ) || ( hasHeaders && i > 1 ) ) {
                 output += getSeparatorRow(colLengths, cML, cMM, cMR, spH, prefix, suffix)
             }
         }
-
+        var carryOver = 0; // start a new line
         for (var j = 0; j <= colLengths.length; j++) {
             // output the data
             if (j == 0) {
                 output += prefix;
             }
             var cols = rows[i].split(separator);
-            var data = cols[j] || "";
+            var data = (cols[j] || "").trim();
             if (autoFormat) {
                 if (hasHeaders && i == 0) {
                     align = "c";
@@ -414,8 +433,21 @@ function createTable() {
             } else {
                 verticalBar = spV;
             }
+            // compensate fraction width
             if ( j < colLengths.length ) {
-                data = _pad(data, colLengths[j], " ", align);
+                var colLength = colLengths[j]; 
+                // calculate fractional error
+                var txtLength = getUnicodeAwareLength(data);
+                var txtError = colLength > txtLength ? Math.ceil(txtLength) - txtLength : 0;
+                carryOver += txtError;
+                
+                data = _pad(data, colLength, " ", align);
+                
+                // add a space to compensate for fraction width
+                if (carryOver >= 0.75) {
+                    data += ' '
+                    carryOver -= 1;
+                }
                 if (j == 0 && !hasLeftSide) {
                     output += "  " + data + " ";
                 } else {
@@ -444,13 +476,15 @@ function createTable() {
     $('#outputTbl').hide();
 }
 
-function getSeparatorRow(lengths, left, middle, right, horizontal, prefix, suffix) {
+function getSeparatorRow(lengths, left, middle, right, horizontal, prefix, suffix, isNumberCol) {
     rowOutput = prefix;
     for (var j = 0; j <= lengths.length; j++) {
+        var alignSuffix = isNumberCol && isNumberCol.length > j && isNumberCol[j] ? ":" : "";
+        var colLength = lengths[j] + 2 - alignSuffix.length;
         if ( j == 0 ) {
-            rowOutput += left + _repeat(horizontal, lengths[j] + 2);
+            rowOutput += left + _repeat(horizontal, colLength) + alignSuffix;
         } else if ( j < lengths.length ) {
-            rowOutput += middle + _repeat(horizontal, lengths[j] + 2);
+            rowOutput += middle + _repeat(horizontal, colLength) + alignSuffix;
         } else {
             rowOutput += right + suffix + "\n";
         }
@@ -609,8 +643,8 @@ function defValue(value, defaultValue) {
 function _pad(text, length, char, align) {
     // align: r l or c
     char = defValue(char, " ");
-    align = defValue(align, "l");
-    var additionalChars = length - text.length;
+    align = defValue(align, "l");    
+    var additionalChars = Math.floor(length - (getUnicodeAwareLength(text)));
     var result = "";
     switch (align) {
         case "r":
