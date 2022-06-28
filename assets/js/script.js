@@ -13,42 +13,27 @@ $(function() {
             this.selectionStart = startPos + myValue.length;
             this.selectionEnd = startPos + myValue.length;
             this.scrollTop = scrollTop;
-            
+
             e.preventDefault();
         }
     });
-    
-    elMeasure = document.createElement('pre');
-    document.body.appendChild(elMeasure);
-    $(elMeasure).css({
-        position: 'absolute',
-        top: '-200px',
-        width: 'auto',
-        height: 'auto',
-        display: 'inline-block',
-        font: $('#input').css('font'),
-        letterSpacing: 0,
-        padding: 0,
-        border: 0,
-        fontVariantLigatures: 'none'
-    });
-    
-    elMeasure.innerText = Array(11).join('x');
-    wSingle = elMeasure.clientWidth / 10;
+
+    _canvas = document.createElement('canvas');
 });
 
-
-var elMeasure, wSingle, _cache = {};
-function getUnicodeAwareLength(str) {
-    if (_cache[str] )return _cache[str]
-     elMeasure.innerText = str;
-    return _cache[str] = Math.round(elMeasure.clientWidth / wSingle);
+var _canvas, _context, _cache = {}; // measuring cache
+function measureWidth(str) {
+    if (typeof _cache[str] === 'number') return _cache[str];
+    _context = _canvas.getContext('2d');
+    _context.font = $('#input').css('font');
+    return _cache[str] = _context.measureText(str).width;
+}
+function getUnicodeAwareLength(text) {
+    var w = measureWidth(text);
+    var wSingle = measureWidth("-");
+    return w / wSingle;
 }
 
-// var regMultibyte = /[\uD800-\uDBFF][\uD800-\uDFFF]{,13}|[ㄱ-ㅎㅏ-ㅣ가-힣]|(?:[\x23-\x39\uFE0F\u20E3]{3})/g;
-// function getUnicodeAwareLength(str) {
-//     return str.replace(regMultibyte, '..').length;
-// }
 
 function createTable() {
     // set up the style
@@ -115,8 +100,9 @@ function createTable() {
                     isNumberCol[j] = false;
                 }
             }
-            if (isNewCol || colLengths[j] < getUnicodeAwareLength(data)) {                
-                colLengths[j] = getUnicodeAwareLength(data);
+            var colLength = Math.round(getUnicodeAwareLength(data));
+            if (isNewCol || colLengths[j] < colLength) {
+                colLengths[j] = colLength;
             }
         }
     }
@@ -425,7 +411,7 @@ function createTable() {
                 output += getSeparatorRow(colLengths, cML, cMM, cMR, spH, prefix, suffix)
             }
         }
-
+        var carryOver = 0; // start a new line
         for (var j = 0; j <= colLengths.length; j++) {
             // output the data
             if (j == 0) {
@@ -447,8 +433,21 @@ function createTable() {
             } else {
                 verticalBar = spV;
             }
+            // compensate fraction width
             if ( j < colLengths.length ) {
-                data = _pad(data, colLengths[j], " ", align);
+                var colLength = colLengths[j]; 
+                // calculate fractional error
+                var txtLength = getUnicodeAwareLength(data);
+                var txtError = colLength > txtLength ? Math.ceil(txtLength) - txtLength : 0;
+                carryOver += txtError;
+                
+                data = _pad(data, colLength, " ", align);
+                
+                // add a space to compensate for fraction width
+                if (carryOver >= 0.75) {
+                    data += ' '
+                    carryOver -= 1;
+                }
                 if (j == 0 && !hasLeftSide) {
                     output += "  " + data + " ";
                 } else {
@@ -481,10 +480,11 @@ function getSeparatorRow(lengths, left, middle, right, horizontal, prefix, suffi
     rowOutput = prefix;
     for (var j = 0; j <= lengths.length; j++) {
         var alignSuffix = isNumberCol && isNumberCol.length > j && isNumberCol[j] ? ":" : "";
+        var colLength = lengths[j] + 2 - alignSuffix.length;
         if ( j == 0 ) {
-            rowOutput += left + _repeat(horizontal, lengths[j] + 2 - alignSuffix.length) + alignSuffix;
+            rowOutput += left + _repeat(horizontal, colLength) + alignSuffix;
         } else if ( j < lengths.length ) {
-            rowOutput += middle + _repeat(horizontal, lengths[j] + 2 - alignSuffix.length) + alignSuffix;
+            rowOutput += middle + _repeat(horizontal, colLength) + alignSuffix;
         } else {
             rowOutput += right + suffix + "\n";
         }
@@ -644,7 +644,7 @@ function _pad(text, length, char, align) {
     // align: r l or c
     char = defValue(char, " ");
     align = defValue(align, "l");    
-    var additionalChars = length - getUnicodeAwareLength(text);
+    var additionalChars = Math.floor(length - (getUnicodeAwareLength(text)));
     var result = "";
     switch (align) {
         case "r":
