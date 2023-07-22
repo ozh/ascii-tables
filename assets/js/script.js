@@ -181,6 +181,11 @@ function createTable() {
         prefix = "|";
         suffix = "|";
         break;
+    case "codeblock":
+        // MD Codeblock
+        commentbefore = "```";
+        commentafter  = "```";
+        break;
     default:
         break;
     }
