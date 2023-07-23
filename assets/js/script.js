@@ -182,7 +182,7 @@ function createTable() {
         suffix = "|";
         break;
     case "codeblock":
-        // MD Codeblock
+        // Markdown code block
         commentbefore = "```";
         commentafter  = "```";
         break;
