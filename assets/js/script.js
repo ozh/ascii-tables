@@ -17,7 +17,98 @@ $(function() {
             e.preventDefault();
         }
     });
+    
+    // Load saved settings from cookies on page load
+    loadSettingsFromCookie();
 });
+
+// Cookie management functions
+function setCookie(name, value, days) {
+    var expires = "";
+    if (days) {
+        var date = new Date();
+        date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+        expires = "; expires=" + date.toUTCString();
+    }
+    document.cookie = name + "=" + (value || "") + expires + "; path=/";
+}
+
+function getCookie(name) {
+    var nameEQ = name + "=";
+    var ca = document.cookie.split(';');
+    for (var i = 0; i < ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0) == ' ') c = c.substring(1, c.length);
+        if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
+    }
+    return null;
+}
+
+function deleteCookie(name) {
+    document.cookie = name + "=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;";
+}
+
+// Function to save all input field values to cookies
+function saveSettingsToCookie() {
+    var settings = {
+        input: $('#input').val(),
+        hdrStyle: $('#hdr-style').val(),
+        style: $('#style').val(),
+        commenting: $('#commenting').val(),
+        autoFormat: $('#auto-format').is(':checked'),
+        trimInput: $('#trim-input').is(':checked'),
+        separator: $('#separator').val()
+    };
+    setCookie('asciiTableSettings', JSON.stringify(settings), 365); // Save for 1 year
+}
+
+// Function to load settings from cookies
+function loadSettingsFromCookie() {
+    var settingsJson = getCookie('asciiTableSettings');
+    if (settingsJson) {
+        try {
+            var settings = JSON.parse(settingsJson);
+            
+            // Restore values
+            if (settings.input !== undefined) $('#input').val(settings.input);
+            if (settings.hdrStyle !== undefined) $('#hdr-style').val(settings.hdrStyle);
+            if (settings.style !== undefined) $('#style').val(settings.style);
+            if (settings.commenting !== undefined) $('#commenting').val(settings.commenting);
+            if (settings.autoFormat !== undefined) $('#auto-format').prop('checked', settings.autoFormat);
+            if (settings.trimInput !== undefined) $('#trim-input').prop('checked', settings.trimInput);
+            if (settings.separator !== undefined) $('#separator').val(settings.separator);
+            
+            // Check the remember settings checkbox
+            $('#remember-settings').prop('checked', true);
+            
+            // Recreate the table with loaded settings
+            createTable();
+        } catch (e) {
+            console.error('Error loading settings from cookie:', e);
+        }
+    }
+}
+
+// Function to toggle cookie storage
+function toggleCookieStorage() {
+    var isChecked = $('#remember-settings').is(':checked');
+    
+    if (isChecked) {
+        // Save current settings to cookie
+        saveSettingsToCookie();
+    } else {
+        // Delete the cookie
+        deleteCookie('asciiTableSettings');
+    }
+}
+
+// Override input field change handlers to save to cookie if remember is enabled
+function onInputChange() {
+    createTable();
+    if ($('#remember-settings').is(':checked')) {
+        saveSettingsToCookie();
+    }
+}
 
 function createTable() {
     // set up the style

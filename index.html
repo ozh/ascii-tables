@@ -48,7 +48,7 @@
       </div>
       <div class="col-xs-9">
         <div class="row">
-          <textarea class="form-control fixed-width " rows="5" wrap="off" id="input" onchange="createTable()" onkeyup="createTable()">Col1	Col2	Col3	Numeric Column
+          <textarea class="form-control fixed-width " rows="5" wrap="off" id="input" onchange="onInputChange()" onkeyup="onInputChange()">Col1	Col2	Col3	Numeric Column
 Value 1	Value 2	123	10.0
 Separate	cols    with a tab or 4 spaces	-2,027.1
 This is a row with only one cell</textarea>
@@ -63,7 +63,7 @@ This is a row with only one cell</textarea>
         <div class="col-xs-6">
           <div class="row">
             <label for="hdr-style" class="control-label" title="Select what should be used as a header">Header Location:
-				<select id="hdr-style" onchange="createTable()" onselect="createTable()">
+				<select id="hdr-style" onchange="onInputChange()" onselect="onInputChange()">
 					<option value="none">None</option>
 					<option value="top" selected="true">First Row</option>
 					<option value="ssheet">Spreadsheet</option>
@@ -72,7 +72,7 @@ This is a row with only one cell</textarea>
           </div>
           <div class="row">
             <label for="style" class="control-label" title="Select the output format of the table">Output Style:
-				<select id="style" onchange="createTable()">
+				<select id="style" onchange="onInputChange()">
 					<option value="mysql">ASCII (mysql style)</option>
 					<option value="separated">ASCII (separated)</option>
 					<option value="compact">ASCII (compact)</option>
@@ -94,7 +94,7 @@ This is a row with only one cell</textarea>
           </div>
           <div class="row" style="width:200%;">
             <label for="commenting" class="control-label" title="Select a comment style to place to the left of the table">Comment Style:
-				<select id="commenting" onchange="createTable()">
+				<select id="commenting" onchange="onInputChange()">
 					<option value="none">"" (no comment style applied)</option>
 					<option value="doubleslant">"// " C++/C#/F#/Java/JavaScript/Rust/Swift</option>
 					<option value="hash">"# " Perl/PowerShell/Python/R/Ruby</option>
@@ -117,13 +117,17 @@ This is a row with only one cell</textarea>
         <div class="col-xs-5">
           <div class="row">
             <label for="auto-format" class="control-label" title="Center the headers and right-align numbers in the output table">Auto-Format:
-            <input id="auto-format" checked="true" type="checkbox" title="Center the headers and right-align numbers in the output table" onchange="createTable()"></label>
+            <input id="auto-format" checked="true" type="checkbox" title="Center the headers and right-align numbers in the output table" onchange="onInputChange()"></label>
             <label for="trim-input" class="control-label" title="Trim the input lines before parsing">Trim Input Lines:
-            <input id="trim-input" checked="true" type="checkbox" title="Trim the input lines before parsing" onchange="createTable()"></label>
+            <input id="trim-input" checked="true" type="checkbox" title="Trim the input lines before parsing" onchange="onInputChange()"></label>
+          </div>
+          <div class="row">
+            <label for="remember-settings" class="control-label" title="Remember all settings and input in browser cookies">Remember Settings:
+            <input id="remember-settings" type="checkbox" title="Remember all settings and input in browser cookies" onchange="toggleCookieStorage()"></label>
           </div>
           <div class="row">
             <label for="separator" class="control-label" title="Identify character for custom separator, default is the tab character">Custom Separator:
-            <input id="separator" type="text" name="separator" maxlength="1" size="1" onfocus="this.value = '';createTable()" onkeyup="createTable()"
+            <input id="separator" type="text" name="separator" maxlength="1" size="1" onfocus="this.value = '';onInputChange()" onkeyup="onInputChange()"
             /></label>
           </div>
         </div>
