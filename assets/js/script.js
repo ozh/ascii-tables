@@ -128,10 +128,9 @@ function parseCsvLine(line, separator) {
     
     while (i < line.length) {
         var char = line[i];
-        var nextChar = i + 1 < line.length ? line[i + 1] : null;
         
         if (char === '"') {
-            if (insideQuotes && nextChar === '"') {
+            if (insideQuotes && i + 1 < line.length && line[i + 1] === '"') {
                 // Escaped quote (two consecutive quotes)
                 currentCol += '"';
                 i++; // Skip the next quote
