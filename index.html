@@ -120,17 +120,14 @@ This is a row with only one cell</textarea>
             <input id="auto-format" checked="true" type="checkbox" title="Center the headers and right-align numbers in the output table" onchange="onInputChange()"></label>
             <label for="trim-input" class="control-label" title="Trim the input lines before parsing">Trim Input Lines:
             <input id="trim-input" checked="true" type="checkbox" title="Trim the input lines before parsing" onchange="onInputChange()"></label>
+            <label for="separator" class="control-label" title="Identify character for custom separator, default is the tab character">Custom Separator:
+            <input id="separator" type="text" name="separator" maxlength="1" size="1" onfocus="this.value = '';onInputChange()" onkeyup="onInputChange()"/></label>
             <label for="strip-csv-quotes" class="control-label" title="Strip double quotes from CSV fields and handle quoted commas">Strip CSV Quotes:
             <input id="strip-csv-quotes" type="checkbox" title="Strip double quotes from CSV fields and handle quoted commas" onchange="onInputChange()"></label>
           </div>
           <div class="row">
             <label for="remember-settings" class="control-label" title="Remember all settings and input in browser cookies">Remember Settings:
             <input id="remember-settings" type="checkbox" title="Remember all settings and input in browser cookies" onchange="toggleCookieStorage()"></label>
-          </div>
-          <div class="row">
-            <label for="separator" class="control-label" title="Identify character for custom separator, default is the tab character">Custom Separator:
-            <input id="separator" type="text" name="separator" maxlength="1" size="1" onfocus="this.value = '';onInputChange()" onkeyup="onInputChange()"
-            /></label>
           </div>
         </div>
       </div>
@@ -158,8 +155,7 @@ This is a row with only one cell</textarea>
     <div id="outputTbl" class="row"></div>
     <div class="row">
       <footer>
-        Idea and code base by <a href="http://www.sensefulsolutions.com/2010/10/format-text-as-table.html">Senseful Solutions</a>. Forked by <a href="https://github.com/ozh">Ozh</a> to tweak a few stuff and to add <abbr title="Github Flavored Markdown">GFM</abbr>.
-        See on <a href="https://github.com/ozh/ascii-tables">Github</a>.
+        Idea and code base by <a href="https://github.com/senseful/senseful.github.io">Senseful Solutions</a>. Forked by <a href="https://github.com/ozh">Ozh</a> to improve. See on <a href="https://github.com/ozh/ascii-tables">Github</a>.
       </footer>
     </div>
   </div>
