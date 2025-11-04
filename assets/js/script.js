@@ -57,7 +57,8 @@ function saveSettingsToCookie() {
         commenting: $('#commenting').val(),
         autoFormat: $('#auto-format').is(':checked'),
         trimInput: $('#trim-input').is(':checked'),
-        separator: $('#separator').val()
+        separator: $('#separator').val(),
+        stripCsvQuotes: $('#strip-csv-quotes').is(':checked')
     };
     setCookie('asciiTableSettings', JSON.stringify(settings), 365); // Save for 1 year
 }
@@ -77,6 +78,7 @@ function loadSettingsFromCookie() {
             if (settings.autoFormat !== undefined) $('#auto-format').prop('checked', settings.autoFormat);
             if (settings.trimInput !== undefined) $('#trim-input').prop('checked', settings.trimInput);
             if (settings.separator !== undefined) $('#separator').val(settings.separator);
+            if (settings.stripCsvQuotes !== undefined) $('#strip-csv-quotes').prop('checked', settings.stripCsvQuotes);
             
             // Check the remember settings checkbox
             $('#remember-settings').prop('checked', true);
@@ -110,6 +112,49 @@ function onInputChange() {
     }
 }
 
+// Parse a CSV line respecting double-quoted fields
+function parseCsvLine(line, separator) {
+    var cols = [];
+    var currentCol = "";
+    var insideQuotes = false;
+    var i = 0;
+    
+    // Auto-detect comma separator if the line appears to be CSV
+    var effectiveSeparator = separator;
+    if (separator === "\t" && line.indexOf('"') !== -1 && line.indexOf(',') !== -1) {
+        // Line has quotes and commas, likely CSV format
+        effectiveSeparator = ',';
+    }
+    
+    while (i < line.length) {
+        var char = line[i];
+        var nextChar = i + 1 < line.length ? line[i + 1] : null;
+        
+        if (char === '"') {
+            if (insideQuotes && nextChar === '"') {
+                // Escaped quote (two consecutive quotes)
+                currentCol += '"';
+                i++; // Skip the next quote
+            } else {
+                // Toggle quote state
+                insideQuotes = !insideQuotes;
+            }
+        } else if (char === effectiveSeparator && !insideQuotes) {
+            // Column separator outside of quotes
+            cols.push(currentCol);
+            currentCol = "";
+        } else {
+            currentCol += char;
+        }
+        i++;
+    }
+    
+    // Add the last column
+    cols.push(currentCol);
+    
+    return cols;
+}
+
 function createTable() {
     // set up the style
     var cTL, cTM, cTR;
@@ -121,6 +166,7 @@ function createTable() {
     var headerStyle = $('#hdr-style').val();
     var autoFormat = $('#auto-format').is(':checked');
     var trimInput = $('#trim-input').is(':checked');
+    var stripCsvQuotes = $('#strip-csv-quotes').is(':checked');
     var hasHeaders = headerStyle == "top";
     var spreadSheetStyle = headerStyle == "ssheet";
     var input = $('#input').val();
@@ -159,7 +205,14 @@ function createTable() {
             //Tab is not the separator, replace tabs with single characters to keep correct spacing
             rows[i] = rows[i].replace(/\t/g, "    ");
         }
-        var cols = rows[i].split(separator);
+        
+        var cols;
+        if (stripCsvQuotes) {
+            cols = parseCsvLine(rows[i], separator);
+        } else {
+            cols = rows[i].split(separator);
+        }
+        
         for (var j = 0; j < cols.length; j++) {
             var data = cols[j];
             var isNewCol = colLengths[j] == undefined;
@@ -489,7 +542,12 @@ function createTable() {
             if (j == 0) {
                 output += prefix;
             }
-            var cols = rows[i].split(separator);
+            var cols;
+            if (stripCsvQuotes) {
+                cols = parseCsvLine(rows[i], separator);
+            } else {
+                cols = rows[i].split(separator);
+            }
             var data = cols[j] || "";
             if (autoFormat) {
                 if (hasHeaders && i == 0) {
@@ -551,10 +609,16 @@ function getSeparatorRow(lengths, left, middle, right, horizontal, prefix, suffi
 
 function outputAsNormalTable(rows, hasHeaders, colLengths, separator) {
     var output = "";
+    var stripCsvQuotes = $('#strip-csv-quotes').is(':checked');
 
     var $outputTable = $('<table border="1" cellpadding="1" cellspacing="1" align="center">');
     for (var i = 0; i < rows.length; i++) {
-        var cols = rows[i].split(separator);
+        var cols;
+        if (stripCsvQuotes) {
+            cols = parseCsvLine(rows[i], separator);
+        } else {
+            cols = rows[i].split(separator);
+        }
         var tag = (hasHeaders && i == 0) ? "th" : "td";
         var $row = $('<tr>').appendTo($outputTable);
         for (var j = 0; j < colLengths.length; j++) {
