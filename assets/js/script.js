@@ -58,7 +58,8 @@ function saveSettingsToCookie() {
         autoFormat: $('#auto-format').is(':checked'),
         trimInput: $('#trim-input').is(':checked'),
         separator: $('#separator').val(),
-        stripCsvQuotes: $('#strip-csv-quotes').is(':checked')
+        stripCsvQuotes: $('#strip-csv-quotes').is(':checked'),
+        maxColumnWidth: $('#max-column-width').val()
     };
     setCookie('asciiTableSettings', JSON.stringify(settings), 365); // Save for 1 year
 }
@@ -79,6 +80,7 @@ function loadSettingsFromCookie() {
             if (settings.trimInput !== undefined) $('#trim-input').prop('checked', settings.trimInput);
             if (settings.separator !== undefined) $('#separator').val(settings.separator);
             if (settings.stripCsvQuotes !== undefined) $('#strip-csv-quotes').prop('checked', settings.stripCsvQuotes);
+            if (settings.maxColumnWidth !== undefined) $('#max-column-width').val(settings.maxColumnWidth);
             
             // Check the remember settings checkbox
             $('#remember-settings').prop('checked', true);
@@ -110,6 +112,48 @@ function onInputChange() {
     if ($('#remember-settings').is(':checked')) {
         saveSettingsToCookie();
     }
+}
+
+// Text wrapping function - wraps text to a maximum width and returns array of lines
+function wrapText(text, maxWidth) {
+    if (maxWidth <= 0 || text.length <= maxWidth) {
+        return [text];
+    }
+    
+    var lines = [];
+    var words = text.split(' ');
+    var currentLine = '';
+    
+    for (var i = 0; i < words.length; i++) {
+        var word = words[i];
+        
+        // Handle words longer than maxWidth
+        if (word.length > maxWidth) {
+            if (currentLine.length > 0) {
+                lines.push(currentLine);
+                currentLine = '';
+            }
+            // Break long word into chunks
+            for (var j = 0; j < word.length; j += maxWidth) {
+                lines.push(word.substring(j, j + maxWidth));
+            }
+        } else if (currentLine.length + word.length + 1 <= maxWidth) {
+            // Word fits on current line
+            currentLine += (currentLine.length > 0 ? ' ' : '') + word;
+        } else {
+            // Word doesn't fit, start new line
+            if (currentLine.length > 0) {
+                lines.push(currentLine);
+            }
+            currentLine = word;
+        }
+    }
+    
+    if (currentLine.length > 0) {
+        lines.push(currentLine);
+    }
+    
+    return lines.length > 0 ? lines : [''];
 }
 
 // Parse a CSV line respecting double-quoted fields
@@ -166,6 +210,7 @@ function createTable() {
     var autoFormat = $('#auto-format').is(':checked');
     var trimInput = $('#trim-input').is(':checked');
     var stripCsvQuotes = $('#strip-csv-quotes').is(':checked');
+    var maxColumnWidth = parseInt($('#max-column-width').val()) || 0;
     var hasHeaders = headerStyle == "top";
     var spreadSheetStyle = headerStyle == "ssheet";
     var input = $('#input').val();
@@ -226,8 +271,15 @@ function createTable() {
                     isNumberCol[j] = false;
                 }
             }
-            if (isNewCol || colLengths[j] < data.length) {
-               colLengths[j] = data.length;
+            
+            // Calculate column width considering max width limit
+            var colWidth = data.length;
+            if (maxColumnWidth > 0 && colWidth > maxColumnWidth) {
+                colWidth = maxColumnWidth;
+            }
+            
+            if (isNewCol || colLengths[j] < colWidth) {
+               colLengths[j] = colWidth;
             }
         }
     }
@@ -524,6 +576,7 @@ function createTable() {
         output += getSeparatorRow(colLengths, cTL, cTM, cTR, topLineHorizontal, prefix, suffix)
     }
 
+    // Process rows with text wrapping support
     for (var i = 0; i < rows.length; i++) {
         // Separator Rows
         if (hasHeaders && hasHeaderSeparators && i == 1 ) {
@@ -536,45 +589,63 @@ function createTable() {
             }
         }
 
-        for (var j = 0; j <= colLengths.length; j++) {
-            // output the data
-            if (j == 0) {
-                output += prefix;
-            }
-            var cols;
-            if (stripCsvQuotes) {
-                cols = parseCsvLine(rows[i], separator);
-            } else {
-                cols = rows[i].split(separator);
-            }
+        // Parse columns and wrap text if needed
+        var cols;
+        if (stripCsvQuotes) {
+            cols = parseCsvLine(rows[i], separator);
+        } else {
+            cols = rows[i].split(separator);
+        }
+        
+        // Wrap each column and track the maximum number of lines
+        var wrappedCols = [];
+        var maxLines = 1;
+        for (var j = 0; j < colLengths.length; j++) {
             var data = cols[j] || "";
-            if (autoFormat) {
-                if (hasHeaders && i == 0) {
-                    align = "c";
-                } else if (isNumberCol[j]) {
-                    align = "r";
+            var wrappedLines = (maxColumnWidth > 0) ? wrapText(data, colLengths[j]) : [data];
+            wrappedCols[j] = wrappedLines;
+            maxLines = Math.max(maxLines, wrappedLines.length);
+        }
+        
+        // Output each wrapped line of the row
+        for (var lineNum = 0; lineNum < maxLines; lineNum++) {
+            for (var j = 0; j <= colLengths.length; j++) {
+                // output the data
+                if (j == 0) {
+                    output += prefix;
+                }
+                var data = "";
+                if (j < colLengths.length) {
+                    data = (wrappedCols[j] && wrappedCols[j][lineNum]) ? wrappedCols[j][lineNum] : "";
+                }
+                
+                if (autoFormat) {
+                    if (hasHeaders && i == 0) {
+                        align = "c";
+                    } else if (isNumberCol[j]) {
+                        align = "r";
+                    } else {
+                        align = "l";
+                    }
+                }
+                if (hasHeaders && i == 0 ) {
+                    verticalBar = hdV;
                 } else {
-                    align = "l";
+                    verticalBar = spV;
+                }
+                if ( j < colLengths.length ) {
+                    data = _pad(data, colLengths[j], " ", align);
+                    if (j == 0 && !hasLeftSide) {
+                        output += "  " + data + " ";
+                    } else {
+                        output += verticalBar + " " + data + " ";
+                    }
+                } else if (hasRightSide) {
+                    output += verticalBar + suffix + "\n";
+                } else {
+                    output += suffix + "\n";
                 }
             }
-            if (hasHeaders && i == 0 ) {
-                verticalBar = hdV;
-            } else {
-                verticalBar = spV;
-            }
-            if ( j < colLengths.length ) {
-                data = _pad(data, colLengths[j], " ", align);
-                if (j == 0 && !hasLeftSide) {
-                    output += "  " + data + " ";
-                } else {
-                    output += verticalBar + " " + data + " ";
-                }
-            } else if (hasRightSide) {
-                output += verticalBar + suffix + "\n";
-            } else {
-                output += suffix + "\n";
-            }
-
         }
     }
 

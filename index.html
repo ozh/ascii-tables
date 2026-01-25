@@ -126,6 +126,10 @@ This is a row with only one cell</textarea>
             <input id="strip-csv-quotes" type="checkbox" title="Strip double quotes from CSV fields and handle quoted commas" onchange="onInputChange()"></label>
           </div>
           <div class="row">
+            <label for="max-column-width" class="control-label" title="Maximum column width before text wrapping (0 = no limit)">Max Column Width:
+            <input id="max-column-width" type="number" name="max-column-width" min="0" max="200" value="0" title="Maximum column width before text wrapping (0 = no limit)" onchange="onInputChange()" onkeyup="onInputChange()"/></label>
+          </div>
+          <div class="row">
             <label for="remember-settings" class="control-label" title="Remember all settings and input in browser cookies">Remember Settings:
             <input id="remember-settings" type="checkbox" title="Remember all settings and input in browser cookies" onchange="toggleCookieStorage()"></label>
           </div>
