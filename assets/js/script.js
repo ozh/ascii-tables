@@ -114,30 +114,147 @@ function onInputChange() {
     }
 }
 
+// Display width of a single code point, in monospace columns.
+// East Asian Wide and Fullwidth characters (温度, ＡＢＣ) take two columns;
+// combining marks and variation selectors take none.
+function _charWidth(cp) {
+    if ((cp >= 0x0300 && cp <= 0x036F) || // combining diacritical marks
+        (cp >= 0x1AB0 && cp <= 0x1AFF) || // combining diacriticals extended
+        (cp >= 0x1DC0 && cp <= 0x1DFF) || // combining diacriticals supplement
+        (cp >= 0x200B && cp <= 0x200F) || // zero width space / joiners / marks
+        (cp >= 0x20D0 && cp <= 0x20FF) || // combining marks for symbols
+        (cp >= 0xFE00 && cp <= 0xFE0F) || // variation selectors
+        (cp >= 0xFE20 && cp <= 0xFE2F)) { // combining half marks
+        return 0;
+    }
+    if ((cp >= 0x1100 && cp <= 0x115F) ||   // Hangul Jamo initials
+        (cp >= 0x2E80 && cp <= 0x303E) ||   // CJK radicals, Kangxi, CJK symbols
+        (cp >= 0x3041 && cp <= 0x33FF) ||   // Kana, Hangul compat, CJK compat
+        (cp >= 0x3400 && cp <= 0x4DBF) ||   // CJK unified ideographs ext A
+        (cp >= 0x4E00 && cp <= 0x9FFF) ||   // CJK unified ideographs
+        (cp >= 0xA000 && cp <= 0xA4CF) ||   // Yi syllables
+        (cp >= 0xA960 && cp <= 0xA97F) ||   // Hangul Jamo ext A
+        (cp >= 0xAC00 && cp <= 0xD7A3) ||   // Hangul syllables
+        (cp >= 0xF900 && cp <= 0xFAFF) ||   // CJK compatibility ideographs
+        (cp >= 0xFE10 && cp <= 0xFE19) ||   // vertical forms
+        (cp >= 0xFE30 && cp <= 0xFE6F) ||   // CJK compat forms, small forms
+        (cp >= 0xFF00 && cp <= 0xFF60) ||   // fullwidth forms
+        (cp >= 0xFFE0 && cp <= 0xFFE6) ||   // fullwidth signs
+        (cp >= 0x1F300 && cp <= 0x1F64F) || // emoji: pictographs, emoticons
+        (cp >= 0x1F680 && cp <= 0x1F6FF) || // emoji: transport and map
+        (cp >= 0x1F900 && cp <= 0x1F9FF) || // emoji: supplemental
+        (cp >= 0x20000 && cp <= 0x2FFFD) || // CJK unified ideographs ext B-F
+        (cp >= 0x30000 && cp <= 0x3FFFD)) { // CJK unified ideographs ext G+
+        return 2;
+    }
+    return 1;
+}
+
+// Display width of a string, in monospace columns. Use this instead of
+// .length anywhere a width is meant: .length counts UTF-16 code units, so
+// "温度" measures 2 when it occupies 4 columns.
+function _strWidth(str) {
+    var width = 0;
+    for (var i = 0; i < str.length; i++) {
+        var cp = str.codePointAt(i);
+        if (cp > 0xFFFF) {
+            i++; // skip the low surrogate
+        }
+        width += _charWidth(cp);
+    }
+    return width;
+}
+
+// Longest prefix of str that fits maxWidth columns, never splitting a surrogate pair
+function _sliceToWidth(str, maxWidth) {
+    var width = 0;
+    for (var i = 0; i < str.length; i++) {
+        var cp = str.codePointAt(i);
+        var charWidth = _charWidth(cp);
+        if (width + charWidth > maxWidth) {
+            return str.substring(0, i);
+        }
+        width += charWidth;
+        if (cp > 0xFFFF) {
+            i++; // skip the low surrogate
+        }
+    }
+    return str;
+}
+
+// Marks the second half of a wide character when a line is split into display columns
+var WIDE_CHAR_CONTINUATION = "\u0000";
+
+// Split a line into display columns: index N holds whatever is drawn at column
+// N, and a wide character occupies two entries (the second a continuation
+// marker). The parser indexes by display column instead of by UTF-16 offset,
+// which wide characters knock out of sync between rows.
+function _toDisplayCells(line) {
+    var cells = [];
+    for (var i = 0; i < line.length; i++) {
+        var cp = line.codePointAt(i);
+        var char = String.fromCodePoint(cp);
+        if (cp > 0xFFFF) {
+            i++; // skip the low surrogate
+        }
+        var charWidth = _charWidth(cp);
+        if (charWidth == 0) {
+            // Combining mark: belongs to the character already drawn
+            if (cells.length > 0) {
+                cells[cells.length - 1] += char;
+            }
+            continue;
+        }
+        cells.push(char);
+        for (var k = 1; k < charWidth; k++) {
+            cells.push(WIDE_CHAR_CONTINUATION);
+        }
+    }
+    return cells;
+}
+
+// Rejoin display columns into text, dropping the continuation markers
+function _cellsToString(cells) {
+    var str = "";
+    for (var i = 0; i < cells.length; i++) {
+        if (cells[i] != WIDE_CHAR_CONTINUATION) {
+            str += cells[i];
+        }
+    }
+    return str;
+}
+
 // Text wrapping function - wraps text to a maximum width and returns array of lines
 function wrapText(text, maxWidth) {
-    if (maxWidth <= 0 || text.length <= maxWidth) {
+    if (maxWidth <= 0 || _strWidth(text) <= maxWidth) {
         return [text];
     }
-    
+
     var lines = [];
     var words = text.split(' ');
     var currentLine = '';
-    
+
     for (var i = 0; i < words.length; i++) {
         var word = words[i];
-        
+
         // Handle words longer than maxWidth
-        if (word.length > maxWidth) {
+        if (_strWidth(word) > maxWidth) {
             if (currentLine.length > 0) {
                 lines.push(currentLine);
                 currentLine = '';
             }
-            // Break long word into chunks
-            for (var j = 0; j < word.length; j += maxWidth) {
-                lines.push(word.substring(j, j + maxWidth));
+            // Break long word into chunks that each fit the display width
+            var rest = word;
+            while (rest.length > 0) {
+                var chunk = _sliceToWidth(rest, maxWidth);
+                if (chunk.length == 0) {
+                    // A single character is wider than maxWidth; emit it anyway
+                    chunk = String.fromCodePoint(rest.codePointAt(0));
+                }
+                lines.push(chunk);
+                rest = rest.substring(chunk.length);
             }
-        } else if (currentLine.length + word.length + 1 <= maxWidth) {
+        } else if (_strWidth(currentLine) + _strWidth(word) + 1 <= maxWidth) {
             // Word fits on current line
             currentLine += (currentLine.length > 0 ? ' ' : '') + word;
         } else {
@@ -273,7 +390,7 @@ function createTable() {
             }
             
             // Calculate column width considering max width limit
-            var colWidth = data.length;
+            var colWidth = _strWidth(data);
             if (maxColumnWidth > 0 && colWidth > maxColumnWidth) {
                 colWidth = maxColumnWidth;
             }
@@ -707,6 +824,10 @@ function outputAsNormalTable(rows, hasHeaders, colLengths, separator) {
 
 function parseTableClick() {
     var result = parseTable($('#output').val());
+    if (result === null) {
+        // Parsing failed and already alerted; keep the input the user has
+        return;
+    }
     $('#input').val(result);
 }
 
@@ -729,14 +850,22 @@ function parseTable(table) {
         }
     }
 
+    // Index every line by display column so that rows containing wide
+    // characters still line up: "| 温度 |" and "| ab   |" are both 8 columns
+    // wide but 6 and 8 characters long.
+    var cellLines = [];
+    for (var i = 0; i < lines.length; i++) {
+        cellLines.push(_toDisplayCells(lines[i]));
+    }
+
     // http://stackoverflow.com/questions/6521245/finding-longest-string-in-array
-    var copy_lines = lines.slice(0);
+    var copy_lines = cellLines.slice(0);
     var longest = copy_lines.sort(function (a, b) { return b.length - a.length; })[0];
 
     // Identify column separators
     var colIndexes = [];
     for (var j = 0; j < longest.length; j++) {
-        if (isColumnSeparator(lines.slice(), j)) {
+        if (isColumnSeparator(cellLines.slice(), j)) {
             colIndexes.push(j);
             // column separators are each padded by a space
             // so skip over minimum distance between 2 columns
@@ -746,10 +875,10 @@ function parseTable(table) {
 
     if (colIndexes.length < 2) {
         alert("No results parsed. Whitespace is not yet parsable as a column separator.");
-        return lines.join('\n');
+        return null;
     } else if (colIndexes.length >= longest.length) {
         alert("No results parsed. Single lines are not yet parsable.");
-        return lines.join('\n');
+        return null;
     }
 
     alert("Parsed rows: " + lines.length + ", length: " + longest.length + ", column locations: " + colIndexes);
@@ -757,7 +886,7 @@ function parseTable(table) {
     // Loop over all items and extract the data
     var result = "";
     for (var i = 0; i < lines.length; i++) {
-        var line = lines[i];
+        var line = cellLines[i];
         for (var j = 0; j < colIndexes.length - 1; j++) {
             if (colIndexes[j+1] == colIndexes[j] + 1) {
                 // adjecent columns, skip this column
@@ -765,7 +894,7 @@ function parseTable(table) {
             }
             var fromCol = colIndexes[j] + 1;
             var toCol = colIndexes[j+1];
-            var data = line.slice(fromCol, toCol);
+            var data = _cellsToString(line.slice(fromCol, toCol));
             data = _trim(data);
             result += data;
 
@@ -793,7 +922,12 @@ function isColumnSeparator(lines, column) {
             // Column is out of range, must not be a separator
             return false;
         }
-        
+
+        if (thisLine[column] == WIDE_CHAR_CONTINUATION || nextLine[column] == WIDE_CHAR_CONTINUATION) {
+            // Second half of a wide character, never a border
+            return false;
+        }
+
         var previousColumn = column - 1;
         var thisLineThisChar = thisLine[column];
         var thisLinePreviousChar = (previousColumn > 0) ? thisLine[previousColumn] : " ";
@@ -835,7 +969,7 @@ function _pad(text, length, char, align) {
     // align: r l or c
     char = defValue(char, " ");
     align = defValue(align, "l");
-    var additionalChars = length - text.length;
+    var additionalChars = length - _strWidth(text);
     var result = "";
     switch (align) {
         case "r":
